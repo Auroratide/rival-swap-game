@@ -8,6 +8,7 @@ import { AbilityController } from "./AbilityController"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { MagicAbilities, TechAbilities } from "./Abilities"
 import { TurretGroup } from "./Turret"
+import { BigEnemy } from "./BigEnemy"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -35,9 +36,13 @@ export class GameScene extends Container implements Scene {
 		this.movementControllers.push(new GriddedMovementController(gridLockedMagic, MAGIC_GIRL_KEYS))
 		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
 
+		const bigEnemy = new BigEnemy()
+		bigEnemy.position.set(1100, 400)
+
       this.addChild(field)
 		this.addChild(magicGirl)
 		this.addChild(techGuy)
+		this.addChild(bigEnemy)
    }
 
    stop = () => {
