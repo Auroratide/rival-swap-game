@@ -13,5 +13,13 @@ export const CONFIG = {
 
 	techGuyName: "Specs",
 	magicGirlName: "Rune",
-	enemyName: "Some old rocks",
+	enemyName: "Immovable Ahbjekt",
+
+	cooldowns: {
+		shockOrb: 50,
+		callLightning: 200,
+		turret: 75,
+		wall: 250,
+		// abilitySwamp
+	}
 }

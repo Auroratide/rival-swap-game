@@ -3,7 +3,7 @@ import { Graphics, Sprite } from "pixi.js"
 export class PlayableCharacter extends Sprite {
 	private graphics = new Graphics()
 
-	constructor() {
+	constructor(private color: number) {
 		super()
 
 		this.draw()
@@ -11,7 +11,7 @@ export class PlayableCharacter extends Sprite {
 	}
 
 	private draw = () => {
-		this.graphics.beginFill(0xaa0000)
+		this.graphics.beginFill(this.color)
 		this.graphics.drawCircle(0, 0, 20)
 		this.graphics.endFill()
 	}

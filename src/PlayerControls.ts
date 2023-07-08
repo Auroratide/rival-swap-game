@@ -13,7 +13,7 @@ export const TECH_GUY_KEYS: PlayerControls = {
 } as const
 
 export const MAGIC_GIRL_KEYS: PlayerControls = {
-	fire: " ",
+	fire: "Enter",
 	special: "Shift",
 	up: "ArrowUp",
 	right: "ArrowRight",
