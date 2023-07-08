@@ -22,7 +22,7 @@ export class GameScene extends Container implements Scene {
 	}
 
    start = () => {
-      const field = new Field({ width: 6, height: 6, unitWidth: 120 })
+      const field = new Field({ width: 5, height: 5, unitWidth: 144 })
 		field.position.set(0, 100)
 
 		const techGuy = new PlayableCharacter()

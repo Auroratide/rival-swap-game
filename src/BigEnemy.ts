@@ -9,10 +9,10 @@ export class BigEnemy extends Sprite {
 		this.draw()
 		this.addChild(this.graphics)
 
-		for (let i = 0; i < 6; ++i) {
+		for (let i = 0; i < 5; ++i) {
 			const enemyHead = new EnemyHead()
 			enemyHead.x = 0
-			enemyHead.y = 120 * i - 300
+			enemyHead.y = 144 * i - 290
 			this.addChild(enemyHead)
 		}
 	}
