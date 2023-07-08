@@ -6,7 +6,7 @@ import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 
 export class AbilitySwap {
 	private abilityControllers: AbilityController[] = []
-	private cooldown: Cooldown
+	readonly cooldown: Cooldown
 	private currentIndex = 0
 
 	constructor(

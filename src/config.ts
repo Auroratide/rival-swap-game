@@ -13,4 +13,5 @@ export const CONFIG = {
 
 	techGuyName: "Specs",
 	magicGirlName: "Rune",
+	enemyName: "Some old rocks",
 }

@@ -14,6 +14,7 @@ import { Story } from "./story/Story"
 import { Positioning } from "./Positioning"
 import { CONFIG } from "./config"
 import { Score } from "./Score"
+import { EnemyUi } from "./EnemyUi"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -74,8 +75,12 @@ export class GameScene extends Container implements Scene {
 		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.ticker, () => score.magicGirlPoints)
 		magicUi.position.set(325, 50)
 
+		const enemyUi = new EnemyUi(CONFIG.enemyName, this.abilitySwap!.cooldown, this.ticker)
+		enemyUi.position.set(925, 50)
+
 		ui.addChild(techUi)
 		ui.addChild(magicUi)
+		ui.addChild(enemyUi)
 
       this.addChild(field)
 		this.addChild(magicGirl)
