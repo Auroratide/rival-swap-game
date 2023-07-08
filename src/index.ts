@@ -6,6 +6,7 @@ function start() {
       view: document.getElementById('game') as HTMLCanvasElement,
       width: 1100,
       height: 900,
+		backgroundColor: 0x111111,
       antialias: true,
    })
 
