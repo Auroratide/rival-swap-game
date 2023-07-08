@@ -86,7 +86,7 @@ export class EnemyHead extends Sprite {
 			this.body.killHead(this)
 		}
 
-		return amount + (this.hp < 0 ? 50 : 0)
+		return amount + (this.hp <= 0 ? 50 : 0)
 	}
 
 	private draw = () => {
