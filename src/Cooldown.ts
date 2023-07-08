@@ -1,4 +1,4 @@
-import { Ticker } from "pixi.js"
+import { Ticker, Graphics, IDestroyOptions } from "pixi.js"
 
 export class Cooldown {
 	private currentTicks: number
@@ -9,6 +9,8 @@ export class Cooldown {
 			this.ticker.add(this.tickDown)
 		}
 	}
+
+	progress = () => this.currentTicks / this.duration
 
 	isOnCooldown = () => this.currentTicks > 0
 
@@ -21,6 +23,31 @@ export class Cooldown {
 		this.currentTicks -= dt
 		if (this.currentTicks <= 0) {
 			this.ticker.remove(this.tickDown)
+		}
+	}
+}
+
+export class CooldownIndicator extends Graphics {
+	constructor(private cooldown: Cooldown, private ticker: Ticker) {
+		super()
+
+		this.draw()
+		this.ticker.add(this.draw)
+	}
+
+	destroy(options?: boolean | IDestroyOptions | undefined): void {
+		this.ticker.remove(this.draw)
+		super.destroy(options)
+	}
+
+	private draw = () => {
+		this.clear()
+		if (this.cooldown.isOnCooldown()) {
+			this.beginFill(0xff0000)
+			this.moveTo(0, 0)
+			this.arc(0, 0, 20, 0, 2 * Math.PI * this.cooldown.progress(), false)
+			this.lineTo(0, 0)
+			this.endFill()
 		}
 	}
 }

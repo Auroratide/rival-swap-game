@@ -9,6 +9,7 @@ import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { MagicAbilities, TechAbilities } from "./Abilities"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
+import { CharacterUi } from "./CharacterUi"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -21,7 +22,8 @@ export class GameScene extends Container implements Scene {
 	}
 
    start = () => {
-      const field = new Field({ width: 6, height: 6, unitWidth: 135 })
+      const field = new Field({ width: 6, height: 6, unitWidth: 120 })
+		field.position.set(0, 100)
 
 		const techGuy = new PlayableCharacter()
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
@@ -39,10 +41,22 @@ export class GameScene extends Container implements Scene {
 		const bigEnemy = new BigEnemy()
 		bigEnemy.position.set(1100, 400)
 
+		const ui = new Container()
+		const techUi = new CharacterUi("Tech guy", tech, this.ticker)
+		techUi.position.set(50, 50)
+
+		const magicUi = new CharacterUi("Magic girl", magic, this.ticker)
+		magicUi.position.set(325, 50)
+
+		ui.addChild(techUi)
+		ui.addChild(magicUi)
+
       this.addChild(field)
 		this.addChild(magicGirl)
 		this.addChild(techGuy)
 		this.addChild(bigEnemy)
+
+		this.addChild(ui)
    }
 
    stop = () => {

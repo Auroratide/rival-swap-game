@@ -7,6 +7,7 @@ import { vectorAdd } from "./math"
 import { Cooldown } from "./Cooldown"
 
 export interface Abilities {
+	readonly fireCooldown: Cooldown
 	fire: () => void
 }
 

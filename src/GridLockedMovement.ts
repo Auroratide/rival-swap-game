@@ -33,7 +33,7 @@ export class GridLockedMovement {
 
 	private lock = () => {
 		const w = this.field.gridSize.unitWidth
-		this.object.position.x = this.position.x * w + w / 2
-		this.object.position.y = this.position.y * w + w / 2
+		this.object.position.x = this.position.x * w + w / 2 + this.field.position.x
+		this.object.position.y = this.position.y * w + w / 2 + this.field.position.y
 	}
 }
