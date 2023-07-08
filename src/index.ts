@@ -9,7 +9,7 @@ function start() {
       antialias: true,
    })
 
-   setup(app.stage)
+   setup(app.stage, app.ticker)
 }
 
 start()
