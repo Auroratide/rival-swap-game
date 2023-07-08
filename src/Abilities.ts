@@ -1,6 +1,6 @@
 import { Container, DisplayObject, Ticker } from "pixi.js"
 import { ShockOrb } from "./ShockOrb"
-import { Turret } from "./Turret"
+import { TurretGroup } from "./Turret"
 import { Field } from "./Field"
 import { GridLockedMovement } from "./GridLockedMovement"
 import { vectorAdd } from "./math"
@@ -16,14 +16,15 @@ export class MagicAbilities implements Abilities {
 	constructor(
 		private user: DisplayObject,
 		private ticker: Ticker,
-		private stage: Container
+		private stage: Container,
+		private turretGroup: TurretGroup
 	) {
 		this.fireCooldown = new Cooldown(ticker, 50)
 	}
 
 	fire = () => {
 		if (!this.fireCooldown.isOnCooldown()) {
-			const orb = new ShockOrb(this.ticker)
+			const orb = new ShockOrb(this.ticker, this.turretGroup)
 			orb.position.x = this.user.position.x
 			orb.position.y = this.user.position.y
 	
@@ -41,6 +42,7 @@ export class TechAbilities implements Abilities {
 		private user: GridLockedMovement,
 		private field: Field,
 		private stage: Container,
+		private allTurrets: TurretGroup,
 		ticker: Ticker
 	) {
 		this.fireCooldown = new Cooldown(ticker, 75)
@@ -48,13 +50,14 @@ export class TechAbilities implements Abilities {
 
 	fire = () => {
 		if (!this.fireCooldown.isOnCooldown()) {
-			const turret = new Turret()
-			const gridLocked = new GridLockedMovement(this.field, turret)
-			gridLocked.moveTo(vectorAdd(this.user.position, { x: 1, y: 0 }))
+			const targetPosition = vectorAdd(this.user.position, { x: 1, y: 0 })
 
-			this.stage.addChild(turret)
-
-			this.fireCooldown.trigger()
+			if (!this.allTurrets.isTurretAt(targetPosition)) {
+				const turret = this.allTurrets.createNew(this.field, targetPosition)
+				this.stage.addChild(turret)
+	
+				this.fireCooldown.trigger()
+			}
 		}
 	}
 }

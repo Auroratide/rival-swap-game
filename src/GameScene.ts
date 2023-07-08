@@ -7,6 +7,7 @@ import { GriddedMovementController } from "./GriddedMovementController"
 import { AbilityController } from "./AbilityController"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { MagicAbilities, TechAbilities } from "./Abilities"
+import { TurretGroup } from "./Turret"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -19,19 +20,20 @@ export class GameScene extends Container implements Scene {
 	}
 
    start = () => {
-      const field = new Field({ width: 6, height: 6, unitWidth: 100 })
-
-		const magicGirl = new PlayableCharacter()
-		const magic = new MagicAbilities(magicGirl, this.ticker, this)
-		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
-		this.movementControllers.push(new GriddedMovementController(gridLockedMagic, MAGIC_GIRL_KEYS))
-		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
+      const field = new Field({ width: 6, height: 6, unitWidth: 135 })
 
 		const techGuy = new PlayableCharacter()
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
-		const tech = new TechAbilities(gridLockedTech, field, this, this.ticker)
+		const turretGroup = new TurretGroup()
+		const tech = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
 		this.movementControllers.push(new GriddedMovementController(gridLockedTech, TECH_GUY_KEYS))
 		this.abilityControllers.push(new AbilityController(tech, TECH_GUY_KEYS))
+
+		const magicGirl = new PlayableCharacter()
+		const magic = new MagicAbilities(magicGirl, this.ticker, this, turretGroup)
+		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
+		this.movementControllers.push(new GriddedMovementController(gridLockedMagic, MAGIC_GIRL_KEYS))
+		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
 
       this.addChild(field)
 		this.addChild(magicGirl)
