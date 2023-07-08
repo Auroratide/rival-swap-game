@@ -4,9 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Timothy Foster",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pixi.js": "^7.2.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "vite": "^4.4.2"
+  }
 }
