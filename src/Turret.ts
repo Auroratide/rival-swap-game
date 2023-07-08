@@ -127,6 +127,8 @@ export class TurretGroup {
 		return adjacentTurrets
 	}
 
+	obstacles = (): GridLockedMovement[] => Array.from(this.turrets.values())
+
 	destroyTurret = (turret: Turret) => {
 		this.turrets.delete(turret)
 		turret.destroy()
