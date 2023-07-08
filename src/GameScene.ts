@@ -39,7 +39,7 @@ export class GameScene extends Container implements Scene {
 		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
 
 		const bigEnemy = new BigEnemy()
-		bigEnemy.position.set(1100, 400)
+		bigEnemy.position.set(1100, 460)
 
 		const ui = new Container()
 		const techUi = new CharacterUi("Tech guy", tech, this.ticker)
