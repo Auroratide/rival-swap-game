@@ -3,13 +3,20 @@ import { Vector2, clamp } from "./math"
 import { Field } from "./Field"
 
 export class GridLockedMovement {
-	private position: Vector2
+	readonly position: Vector2
 
 	constructor(private field: Field, private object: DisplayObject) {
 		this.position = {
 			x: 0,
 			y: 0
 		}
+
+		this.lock()
+	}
+
+	moveTo = (position: Vector2) => {
+		this.position.x = position.x
+		this.position.y = position.y
 
 		this.lock()
 	}

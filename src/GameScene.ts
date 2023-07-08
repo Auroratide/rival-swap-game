@@ -5,12 +5,14 @@ import { PlayableCharacter } from "./PlayableCharacter"
 import { GridLockedMovement } from "./GridLockedMovement"
 import { GriddedMovementController } from "./GriddedMovementController"
 import { AbilityController } from "./AbilityController"
+import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
+import { MagicAbilities, TechAbilities } from "./Abilities"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
 
-	private movementController: GriddedMovementController | undefined
-	private abilityController: AbilityController | undefined
+	private movementControllers: GriddedMovementController[] = []
+	private abilityControllers: AbilityController[] = []
 
 	constructor(private ticker: Ticker) {
 		super()
@@ -18,17 +20,29 @@ export class GameScene extends Container implements Scene {
 
    start = () => {
       const field = new Field({ width: 6, height: 6, unitWidth: 100 })
-		const character = new PlayableCharacter()
-		const gridLockedCharacter = new GridLockedMovement(field, character)
-		this.movementController = new GriddedMovementController(gridLockedCharacter)
-		this.abilityController = new AbilityController(character, this.ticker, this)
+
+		const magicGirl = new PlayableCharacter()
+		const magic = new MagicAbilities(magicGirl, this.ticker, this)
+		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
+		this.movementControllers.push(new GriddedMovementController(gridLockedMagic, MAGIC_GIRL_KEYS))
+		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
+
+		const techGuy = new PlayableCharacter()
+		const gridLockedTech = new GridLockedMovement(field, techGuy)
+		const tech = new TechAbilities(gridLockedTech, field, this)
+		this.movementControllers.push(new GriddedMovementController(gridLockedTech, TECH_GUY_KEYS))
+		this.abilityControllers.push(new AbilityController(tech, TECH_GUY_KEYS))
 
       this.addChild(field)
-		this.addChild(character)
+		this.addChild(magicGirl)
+		this.addChild(techGuy)
    }
 
    stop = () => {
-		this.movementController?.destroy()
-		this.abilityController?.destroy()
+		this.movementControllers.forEach(controller => controller.destroy())
+		this.abilityControllers.forEach(controller => controller.destroy())
+
+		this.movementControllers = []
+		this.abilityControllers = []
 	}
 }

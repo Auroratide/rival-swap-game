@@ -1,8 +1,11 @@
-import { Container, DisplayObject, Ticker } from "pixi.js"
-import { ShockOrb } from "./ShockOrb"
+import { Abilities } from "./Abilities"
+
+export type AbilityKeys = {
+	fire: string
+}
 
 export class AbilityController {
-	constructor(private user: DisplayObject, private ticker: Ticker, private stage: Container) {
+	constructor(private abilities: Abilities, private keys: AbilityKeys) {
 		document.addEventListener("keydown", this.fire)
 	}
 
@@ -11,12 +14,8 @@ export class AbilityController {
 	}
 
 	private fire = (e: KeyboardEvent) => {
-		if (e.key === " ") {
-			const orb = new ShockOrb(this.ticker)
-			orb.position.x = this.user.position.x
-			orb.position.y = this.user.position.y
-
-			this.stage.addChild(orb)
+		if (e.key === this.keys.fire) {
+			this.abilities.fire()
 		}
 	}
 }
