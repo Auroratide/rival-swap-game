@@ -115,6 +115,18 @@ export class TurretGroup {
 		}
 	}
 
+	getAdjacentTurrets = (turret: Turret): Turret[] => {
+		const adjacentTurrets: Turret[] = []
+
+		for (const [otherTurret, gridded] of this.turrets.entries()) {
+			if (gridded.isAdjacentTo(this.turrets.get(turret)!.position)) {
+				adjacentTurrets.push(otherTurret)
+			}
+		}
+
+		return adjacentTurrets
+	}
+
 	destroyTurret = (turret: Turret) => {
 		this.turrets.delete(turret)
 		turret.destroy()

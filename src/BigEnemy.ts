@@ -4,7 +4,7 @@ import { CircularIndicator } from "./CircularIndicator"
 
 export class BigEnemy extends Sprite {
 	private graphics = new Graphics()
-	private heads: EnemyHead[] = []
+	private heads: (EnemyHead | undefined)[] = []
 
 	constructor() {
 		super()
@@ -24,7 +24,7 @@ export class BigEnemy extends Sprite {
 	onCollision = <T extends DisplayObject>(withObject: T, fn: (turret: EnemyHead, object: T) => void) => {
 		return () => {
 			for (const head of this.heads) {
-				if (isColliding(head, withObject)) {
+				if (head != null && isColliding(head, withObject)) {
 					fn(head, withObject)
 					break
 				}
@@ -33,9 +33,24 @@ export class BigEnemy extends Sprite {
 	}
 
 	killHead = (head: EnemyHead) => {
-		this.heads = this.heads.filter((h) => h !== head)
+		const index = this.heads.indexOf(head)
+
+		if (index !== -1) {
+			this.heads[index] = undefined
+		}
+
 		this.removeChild(head)
 		head.destroy()
+	}
+
+	getAdjacentHeads = (head: EnemyHead): EnemyHead[] => {
+		const index = this.heads.indexOf(head)
+
+		if (index !== -1) {
+			return [this.heads[index - 1], this.heads[index + 1]].filter((head) => head != null) as EnemyHead[]
+		}
+
+		return []
 	}
 
 	private draw = () => {

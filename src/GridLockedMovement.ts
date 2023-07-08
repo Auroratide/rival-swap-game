@@ -31,6 +31,10 @@ export class GridLockedMovement {
 		this.lock()
 	}
 
+	isAdjacentTo = (position: Vector2): boolean => {
+		return Math.abs(position.x - this.position.x) + Math.abs(position.y - this.position.y) === 1
+	}
+
 	private lock = () => {
 		const w = this.field.gridSize.unitWidth
 		this.object.position.x = this.position.x * w + w / 2 + this.field.position.x

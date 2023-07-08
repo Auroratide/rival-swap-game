@@ -6,14 +6,19 @@ import { GridLockedMovement } from "./GridLockedMovement"
 import { vectorAdd } from "./math"
 import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
+import { CallLightning } from "./CallLightning"
 
 export interface Abilities {
 	readonly fireCooldown: Cooldown
 	fire: () => void
+
+	readonly specialCooldown: Cooldown
+	special: () => void
 }
 
 export class MagicAbilities implements Abilities {
 	readonly fireCooldown: Cooldown
+	readonly specialCooldown: Cooldown
 
 	constructor(
 		private user: DisplayObject,
@@ -23,6 +28,7 @@ export class MagicAbilities implements Abilities {
 		private enemy: BigEnemy
 	) {
 		this.fireCooldown = new Cooldown(ticker, 50)
+		this.specialCooldown = new Cooldown(ticker, 200)
 	}
 
 	fire = () => {
@@ -36,10 +42,23 @@ export class MagicAbilities implements Abilities {
 			this.fireCooldown.trigger()
 		}
 	}
+
+	special = () => {
+		if (!this.specialCooldown.isOnCooldown()) {
+			const callLightning = new CallLightning(this.ticker, this.turretGroup, this.enemy)
+			callLightning.position.x = this.user.position.x
+			callLightning.position.y = this.user.position.y
+
+			this.stage.addChild(callLightning)
+
+			this.specialCooldown.trigger()
+		}
+	}
 }
 
 export class TechAbilities implements Abilities {
 	readonly fireCooldown: Cooldown
+	readonly specialCooldown: Cooldown
 
 	constructor(
 		private user: GridLockedMovement,
@@ -49,6 +68,7 @@ export class TechAbilities implements Abilities {
 		ticker: Ticker
 	) {
 		this.fireCooldown = new Cooldown(ticker, 75)
+		this.specialCooldown = new Cooldown(ticker, 250)
 	}
 
 	fire = () => {
@@ -61,6 +81,12 @@ export class TechAbilities implements Abilities {
 	
 				this.fireCooldown.trigger()
 			}
+		}
+	}
+
+	special = () => {
+		if (!this.specialCooldown.isOnCooldown()) {
+			
 		}
 	}
 }

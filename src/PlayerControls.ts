@@ -5,6 +5,7 @@ type PlayerControls = AbilityKeys & GriddedMovementKeys
 
 export const TECH_GUY_KEYS: PlayerControls = {
 	fire: "q",
+	special: "e",
 	up: "w",
 	right: "d",
 	down: "s",
@@ -13,6 +14,7 @@ export const TECH_GUY_KEYS: PlayerControls = {
 
 export const MAGIC_GIRL_KEYS: PlayerControls = {
 	fire: " ",
+	special: "Shift",
 	up: "ArrowUp",
 	right: "ArrowRight",
 	down: "ArrowDown",
