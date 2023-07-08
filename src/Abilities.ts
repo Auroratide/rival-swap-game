@@ -8,6 +8,7 @@ import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
 import { CallLightning } from "./CallLightning"
 import { Score } from "./Score"
+import { CONFIG } from "./config"
 
 export interface Abilities {
 	readonly fireCooldown: Cooldown
@@ -29,8 +30,8 @@ export class MagicAbilities implements Abilities {
 		private enemy: BigEnemy,
 		private score: Score
 	) {
-		this.fireCooldown = new Cooldown(ticker, 50)
-		this.specialCooldown = new Cooldown(ticker, 200)
+		this.fireCooldown = new Cooldown(ticker, CONFIG.cooldowns.shockOrb)
+		this.specialCooldown = new Cooldown(ticker, CONFIG.cooldowns.callLightning)
 	}
 
 	fire = () => {
@@ -69,8 +70,8 @@ export class TechAbilities implements Abilities {
 		private allTurrets: TurretGroup,
 		ticker: Ticker
 	) {
-		this.fireCooldown = new Cooldown(ticker, 75)
-		this.specialCooldown = new Cooldown(ticker, 250)
+		this.fireCooldown = new Cooldown(ticker, CONFIG.cooldowns.turret)
+		this.specialCooldown = new Cooldown(ticker, CONFIG.cooldowns.wall)
 	}
 
 	fire = () => {

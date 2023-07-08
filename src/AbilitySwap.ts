@@ -3,6 +3,7 @@ import { Abilities } from "./Abilities"
 import { AbilityController } from "./AbilityController"
 import { Cooldown } from "./Cooldown"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
+import { CONFIG } from "./config"
 
 export class AbilitySwap {
 	private abilityControllers: AbilityController[] = []
@@ -14,7 +15,7 @@ export class AbilitySwap {
 		private magicGirlAbilities: Abilities[],
 		private ticker: Ticker
 	) {
-		this.cooldown = new Cooldown(ticker, 1200, 1200)
+		this.cooldown = new Cooldown(ticker, CONFIG.cooldowns.abilitySwap, CONFIG.cooldowns.abilitySwap)
 		this.ticker.add(this.tick)
 	}
 

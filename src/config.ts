@@ -20,6 +20,6 @@ export const CONFIG = {
 		callLightning: 200,
 		turret: 75,
 		wall: 250,
-		// abilitySwamp
+		abilitySwap: 1200,
 	}
 }
