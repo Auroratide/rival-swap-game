@@ -12,7 +12,9 @@ export class CharacterUi extends Container {
 		portrait.drawCircle(0, 0, 40)
 		portrait.endFill()
 
-		const text = new PlainText(characterName)
+		const text = new PlainText(characterName, {
+			size: 24,
+		})
 		text.position.set(50, -25)
 
 		const fireAbility = this.abilityIcon(abilities.map((it) => it.fireCooldown), ticker)
