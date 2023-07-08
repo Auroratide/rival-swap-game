@@ -4,18 +4,18 @@ import { Field } from "./Field"
 import { PlayableCharacter } from "./PlayableCharacter"
 import { GridLockedMovement } from "./GridLockedMovement"
 import { GriddedMovementController } from "./GriddedMovementController"
-import { AbilityController } from "./AbilityController"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { MagicAbilities, TechAbilities } from "./Abilities"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CharacterUi } from "./CharacterUi"
+import { AbilitySwap } from "./AbilitySwap"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
 
 	private movementControllers: GriddedMovementController[] = []
-	private abilityControllers: AbilityController[] = []
+	private abilitySwap: AbilitySwap | undefined
 
 	constructor(private ticker: Ticker) {
 		super()
@@ -28,26 +28,35 @@ export class GameScene extends Container implements Scene {
 		const bigEnemy = new BigEnemy()
 		bigEnemy.position.set(1100, 460)
 
+		const turretGroup = new TurretGroup(this.ticker, bigEnemy)
+
 		const techGuy = new PlayableCharacter()
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
-		const turretGroup = new TurretGroup(this.ticker, bigEnemy)
-		const tech = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
-		this.abilityControllers.push(new AbilityController(tech, TECH_GUY_KEYS))
+		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
+		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy)
 		
 		const magicGirl = new PlayableCharacter()
-		const magic = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy)
+		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
+		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.ticker)
 		gridLockedMagic.moveTo({ x: 0, y: 4 })
-		this.abilityControllers.push(new AbilityController(magic, MAGIC_GIRL_KEYS))
 		
 		this.movementControllers.push(new GriddedMovementController(gridLockedTech, TECH_GUY_KEYS, turretGroup.obstacles))
 		this.movementControllers.push(new GriddedMovementController(gridLockedMagic, MAGIC_GIRL_KEYS, turretGroup.obstacles))
 
+		this.abilitySwap = new AbilitySwap(
+			[techForTechGuy, magicForTechGuy],
+			[magicForMagicGirl, techForMagicGirl],
+			this.ticker
+		)
+
+		this.abilitySwap?.start()
+
 		const ui = new Container()
-		const techUi = new CharacterUi("Tech guy", tech, this.ticker)
+		const techUi = new CharacterUi("Tech guy", [techForTechGuy, magicForTechGuy], this.ticker)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi("Magic girl", magic, this.ticker)
+		const magicUi = new CharacterUi("Magic girl", [magicForMagicGirl, techForMagicGirl], this.ticker)
 		magicUi.position.set(325, 50)
 
 		ui.addChild(techUi)
@@ -63,9 +72,8 @@ export class GameScene extends Container implements Scene {
 
    stop = () => {
 		this.movementControllers.forEach(controller => controller.destroy())
-		this.abilityControllers.forEach(controller => controller.destroy())
+		this.abilitySwap?.destroy()
 
 		this.movementControllers = []
-		this.abilityControllers = []
 	}
 }

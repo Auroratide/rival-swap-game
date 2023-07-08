@@ -4,7 +4,7 @@ import { PlainText } from "./PlainText"
 import { Cooldown, CooldownIndicator } from "./Cooldown"
 
 export class CharacterUi extends Container {
-	constructor(characterName: string, abilities: Abilities, ticker: Ticker) {
+	constructor(characterName: string, abilities: Abilities[], ticker: Ticker) {
 		super()
 
 		const portrait = new Graphics()
@@ -15,10 +15,10 @@ export class CharacterUi extends Container {
 		const text = new PlainText(characterName)
 		text.position.set(50, -25)
 
-		const fireAbility = this.abilityIcon(abilities.fireCooldown, ticker)
+		const fireAbility = this.abilityIcon(abilities.map((it) => it.fireCooldown), ticker)
 		fireAbility.position.set(65, 25)
 
-		const specialAbility = this.abilityIcon(abilities.specialCooldown, ticker)
+		const specialAbility = this.abilityIcon(abilities.map((it) => it.specialCooldown), ticker)
 		specialAbility.position.set(115, 25)
 
 		this.addChild(portrait)
@@ -27,7 +27,7 @@ export class CharacterUi extends Container {
 		this.addChild(specialAbility)
 	}
 
-	private abilityIcon = (cooldown: Cooldown, ticker: Ticker) => {
+	private abilityIcon = (cooldowns: Cooldown[], ticker: Ticker) => {
 		const iconContainer = new Container()
 
 		const cooldownIcon = new Graphics()
@@ -35,9 +35,11 @@ export class CharacterUi extends Container {
 		cooldownIcon.drawCircle(0, 0, 15)
 		cooldownIcon.endFill()
 
-		const cooldownIndicator = new CooldownIndicator(cooldown, ticker)
+		cooldowns.forEach((cooldown) => {
+			const cooldownIndicator = new CooldownIndicator(cooldown, ticker)
+			iconContainer.addChild(cooldownIndicator)
+		})
 
-		iconContainer.addChild(cooldownIndicator)
 		iconContainer.addChild(cooldownIcon)
 
 		return iconContainer
