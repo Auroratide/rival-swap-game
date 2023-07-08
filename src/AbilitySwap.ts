@@ -18,6 +18,8 @@ export class AbilitySwap {
 		this.ticker.add(this.tick)
 	}
 
+	areSwapped = () => this.currentIndex > 0
+
 	start = () => {
 		const techController = new AbilityController(this.techGuyAbilities[this.currentIndex], TECH_GUY_KEYS)
 		const magicController = new AbilityController(this.magicGirlAbilities[this.currentIndex], MAGIC_GIRL_KEYS)

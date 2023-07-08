@@ -7,12 +7,13 @@ import { Velocity } from "./Velocity"
 import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
+import { Score } from "./Score"
 
 export class Turret extends Sprite {
 	private graphics = new Graphics()
 	private shootCooldown: Cooldown
 
-	constructor(private ticker: Ticker, private enemy: BigEnemy) {
+	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score) {
 		super()
 
 		this.draw()
@@ -24,7 +25,7 @@ export class Turret extends Sprite {
 
 	private shoot = () => {
 		if (!this.shootCooldown.isOnCooldown()) {
-			const bullet = new TurretBullet(this.ticker, this.enemy)
+			const bullet = new TurretBullet(this.ticker, this.enemy, this.score)
 			bullet.position = this.position
 			this.parent?.addChild(bullet)
 
@@ -51,14 +52,15 @@ export class TurretBullet extends Sprite {
 	private velocity: Velocity
 	private checkCollisionsWithEnemy: () => void
 
-	constructor(private ticker: Ticker, enemy: BigEnemy) {
+	constructor(private ticker: Ticker, enemy: BigEnemy, private score: Score) {
 		super()
 
 		this.velocity = new Velocity(ticker, this, { x: CONFIG.turretVelocity, y: 0 })
 
 		this.checkCollisionsWithEnemy = enemy.onCollision(this, (head) => {
 			this.destroy()
-			head.damage(TurretBullet.DAMAGE)
+			const actualDamageDealt = head.damage(TurretBullet.DAMAGE)
+			this.score.addTechPoints(actualDamageDealt)
 		})
 
 		this.draw()
@@ -83,10 +85,10 @@ export class TurretBullet extends Sprite {
 export class TurretGroup {
 	private turrets = new Map<Turret, GridLockedMovement>()
 
-	constructor(private ticker: Ticker, private enemy: BigEnemy) {}
+	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score) {}
 
 	createNew = (field: Field, position: Vector2): Turret => {
-		const turret = new Turret(this.ticker, this.enemy)
+		const turret = new Turret(this.ticker, this.enemy, this.score)
 		const gridLocked = new GridLockedMovement(field, turret)
 		gridLocked.moveTo(position)
 

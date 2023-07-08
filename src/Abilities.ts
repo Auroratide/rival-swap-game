@@ -7,6 +7,7 @@ import { vectorAdd } from "./math"
 import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
 import { CallLightning } from "./CallLightning"
+import { Score } from "./Score"
 
 export interface Abilities {
 	readonly fireCooldown: Cooldown
@@ -25,7 +26,8 @@ export class MagicAbilities implements Abilities {
 		private ticker: Ticker,
 		private stage: Container,
 		private turretGroup: TurretGroup,
-		private enemy: BigEnemy
+		private enemy: BigEnemy,
+		private score: Score
 	) {
 		this.fireCooldown = new Cooldown(ticker, 50)
 		this.specialCooldown = new Cooldown(ticker, 200)
@@ -33,7 +35,7 @@ export class MagicAbilities implements Abilities {
 
 	fire = () => {
 		if (!this.fireCooldown.isOnCooldown()) {
-			const orb = new ShockOrb(this.ticker, this.turretGroup, this.enemy)
+			const orb = new ShockOrb(this.ticker, this.turretGroup, this.enemy, this.score)
 			orb.position.x = this.user.position.x
 			orb.position.y = this.user.position.y
 	
@@ -45,7 +47,7 @@ export class MagicAbilities implements Abilities {
 
 	special = () => {
 		if (!this.specialCooldown.isOnCooldown()) {
-			const callLightning = new CallLightning(this.ticker, this.turretGroup, this.enemy)
+			const callLightning = new CallLightning(this.ticker, this.turretGroup, this.enemy, this.score)
 			callLightning.position.x = this.user.position.x
 			callLightning.position.y = this.user.position.y
 

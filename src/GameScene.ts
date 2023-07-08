@@ -13,6 +13,7 @@ import { AbilitySwap } from "./AbilitySwap"
 import { Story } from "./story/Story"
 import { Positioning } from "./Positioning"
 import { CONFIG } from "./config"
+import { Score } from "./Score"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -37,18 +38,20 @@ export class GameScene extends Container implements Scene {
 		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
 		field.position.set(0, 100)
 
+		const score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
+
 		const bigEnemy = new BigEnemy()
 		bigEnemy.position.set(1100, 460)
 
-		const turretGroup = new TurretGroup(this.ticker, bigEnemy)
+		const turretGroup = new TurretGroup(this.ticker, bigEnemy, score)
 
 		const techGuy = new PlayableCharacter()
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
-		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy)
+		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy, score)
 		
 		const magicGirl = new PlayableCharacter()
-		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy)
+		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy, score)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
 		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.ticker)
 		gridLockedMagic.moveTo({ x: 0, y: 4 })
@@ -65,10 +68,10 @@ export class GameScene extends Container implements Scene {
 		this.abilitySwap?.start()
 
 		const ui = new Container()
-		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.ticker)
+		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.ticker, () => score.techGuyPoints)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.ticker)
+		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.ticker, () => score.magicGirlPoints)
 		magicUi.position.set(325, 50)
 
 		ui.addChild(techUi)

@@ -3,6 +3,7 @@ import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
+import { Score } from "./Score"
 
 export class CallLightning extends Sprite {
 	static MAIN_DAMAGE = CONFIG.lightningDamage * 2
@@ -13,7 +14,7 @@ export class CallLightning extends Sprite {
 	private checkCollisionsWithTurrets: () => void
 	private checkCollisionsWithHeads: () => void
 
-	constructor(private ticker: Ticker, private turretGroup: TurretGroup, private enemy: BigEnemy) {
+	constructor(private ticker: Ticker, private turretGroup: TurretGroup, private enemy: BigEnemy, private score: Score) {
 		super()
 
 		this.velocity = new Velocity(ticker, this, { x: CONFIG.callLightningVelocity, y: 0 })
@@ -31,9 +32,11 @@ export class CallLightning extends Sprite {
 			this.destroy()
 
 			this.enemy.getAdjacentHeads(head).forEach((head) => {
-				head.damage(CallLightning.SIDE_DAMAGE)
+				const actualDamageDealt = head.damage(CallLightning.SIDE_DAMAGE)
+				this.score.addMagicPoints(actualDamageDealt)
 			})
-			head.damage(CallLightning.MAIN_DAMAGE)
+			const actualDamageDealt = head.damage(CallLightning.MAIN_DAMAGE)
+			this.score.addMagicPoints(actualDamageDealt)
 		})
 
 		this.draw()

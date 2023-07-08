@@ -3,6 +3,7 @@ import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
+import { Score } from "./Score"
 
 export class ShockOrb extends Sprite {
 	static DAMAGE = CONFIG.lightningDamage
@@ -12,7 +13,7 @@ export class ShockOrb extends Sprite {
 	private checkCollisionsWithTurrets: () => void
 	private checkCollisionsWithEnemy: () => void
 
-	constructor(private ticker: Ticker, private turretGroup: TurretGroup, enemy: BigEnemy) {
+	constructor(private ticker: Ticker, private turretGroup: TurretGroup, enemy: BigEnemy, private score: Score) {
 		super()
 
 		this.draw()
@@ -27,7 +28,8 @@ export class ShockOrb extends Sprite {
 
 		this.checkCollisionsWithEnemy = enemy.onCollision(this, (head) => {
 			this.destroy()
-			head.damage(ShockOrb.DAMAGE)
+			const actualDamageDealt = head.damage(ShockOrb.DAMAGE)
+			this.score.addMagicPoints(actualDamageDealt)
 		})
 
 		this.ticker.add(this.checkCollisionsWithTurrets)

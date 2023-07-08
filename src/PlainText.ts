@@ -4,6 +4,7 @@ export type PlainTextOptions = {
 	size?: number
 	align?: "left" | "center" | "right"
 	width?: number
+	color?: number
 }
 
 export class PlainText extends Text {
@@ -13,6 +14,7 @@ export class PlainText extends Text {
 			align: options.align || "left",
 			wordWrap: true,
 			wordWrapWidth: options.width || 200,
+			fill: options.color || 0x000000,
 		})
 	}
 }

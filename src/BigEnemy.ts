@@ -77,13 +77,16 @@ export class EnemyHead extends Sprite {
 		this.addChild(this.graphics)
 	}
 
-	damage = (amount: number) => {
+	// returns score for damage
+	damage = (amount: number): number => {
 		this.hp -= amount
 		this.hpIndicator.draw(this.hp / EnemyHead.MAX_HP)
 
 		if (this.hp <= 0) {
 			this.body.killHead(this)
 		}
+
+		return amount + (this.hp < 0 ? 50 : 0)
 	}
 
 	private draw = () => {
