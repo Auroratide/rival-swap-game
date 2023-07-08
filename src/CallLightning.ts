@@ -2,10 +2,11 @@ import { Sprite, Graphics, Ticker, IDestroyOptions } from "pixi.js"
 import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
+import { CONFIG } from "./config"
 
 export class CallLightning extends Sprite {
-	static MAIN_DAMAGE = 24
-	static SIDE_DAMAGE = 12
+	static MAIN_DAMAGE = CONFIG.lightningDamage * 2
+	static SIDE_DAMAGE = this.MAIN_DAMAGE / 2
 
 	private graphics = new Graphics()
 	private velocity: Velocity
@@ -15,7 +16,7 @@ export class CallLightning extends Sprite {
 	constructor(private ticker: Ticker, private turretGroup: TurretGroup, private enemy: BigEnemy) {
 		super()
 
-		this.velocity = new Velocity(ticker, this, { x: 5, y: 0 })
+		this.velocity = new Velocity(ticker, this, { x: CONFIG.callLightningVelocity, y: 0 })
 
 		this.checkCollisionsWithTurrets = turretGroup.onCollision(this, (turret) => {
 			this.turretGroup.getAdjacentTurrets(turret).forEach((turret) => {

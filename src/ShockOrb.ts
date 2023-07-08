@@ -2,9 +2,10 @@ import { Graphics, IDestroyOptions, Sprite, Ticker } from "pixi.js"
 import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
+import { CONFIG } from "./config"
 
 export class ShockOrb extends Sprite {
-	static DAMAGE = 12
+	static DAMAGE = CONFIG.lightningDamage
 
 	private graphics = new Graphics()
 	private velocity: Velocity
@@ -17,7 +18,7 @@ export class ShockOrb extends Sprite {
 		this.draw()
 		this.addChild(this.graphics)
 
-		this.velocity = new Velocity(ticker, this, { x: 10, y: 0 })
+		this.velocity = new Velocity(ticker, this, { x: CONFIG.lightningVelocity, y: 0 })
 
 		this.checkCollisionsWithTurrets = turretGroup.onCollision(this, (turret) => {
 			this.destroy()

@@ -12,6 +12,7 @@ import { CharacterUi } from "./CharacterUi"
 import { AbilitySwap } from "./AbilitySwap"
 import { Story } from "./story/Story"
 import { Positioning } from "./Positioning"
+import { CONFIG } from "./config"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -64,10 +65,10 @@ export class GameScene extends Container implements Scene {
 		this.abilitySwap?.start()
 
 		const ui = new Container()
-		const techUi = new CharacterUi("Tech guy", [techForTechGuy, magicForTechGuy], this.ticker)
+		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.ticker)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi("Magic girl", [magicForMagicGirl, techForMagicGirl], this.ticker)
+		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.ticker)
 		magicUi.position.set(325, 50)
 
 		ui.addChild(techUi)

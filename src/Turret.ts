@@ -6,6 +6,7 @@ import { isColliding } from "./isColliding"
 import { Velocity } from "./Velocity"
 import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
+import { CONFIG } from "./config"
 
 export class Turret extends Sprite {
 	private graphics = new Graphics()
@@ -44,7 +45,7 @@ export class Turret extends Sprite {
 }
 
 export class TurretBullet extends Sprite {
-	static DAMAGE = 4
+	static DAMAGE = CONFIG.turretDamage
 
 	private graphics = new Graphics()
 	private velocity: Velocity
@@ -53,7 +54,7 @@ export class TurretBullet extends Sprite {
 	constructor(private ticker: Ticker, enemy: BigEnemy) {
 		super()
 
-		this.velocity = new Velocity(ticker, this, { x: 10, y: 0 })
+		this.velocity = new Velocity(ticker, this, { x: CONFIG.turretVelocity, y: 0 })
 
 		this.checkCollisionsWithEnemy = enemy.onCollision(this, (head) => {
 			this.destroy()

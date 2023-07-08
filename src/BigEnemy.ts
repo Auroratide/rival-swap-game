@@ -1,6 +1,7 @@
 import { DisplayObject, Graphics, Sprite } from "pixi.js"
 import { isColliding } from "./isColliding"
 import { CircularIndicator } from "./CircularIndicator"
+import { CONFIG } from "./config"
 
 export class BigEnemy extends Sprite {
 	private graphics = new Graphics()
@@ -61,7 +62,7 @@ export class BigEnemy extends Sprite {
 }
 
 export class EnemyHead extends Sprite {
-	static MAX_HP = 120
+	static MAX_HP = CONFIG.monsterHeadHealth
 
 	private graphics = new Graphics()
 	private hpIndicator = new CircularIndicator(57.5)
