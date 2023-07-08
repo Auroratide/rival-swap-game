@@ -29,7 +29,7 @@ export class GameScene extends Container implements Scene {
 
 		const techGuy = new PlayableCharacter()
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
-		const tech = new TechAbilities(gridLockedTech, field, this)
+		const tech = new TechAbilities(gridLockedTech, field, this, this.ticker)
 		this.movementControllers.push(new GriddedMovementController(gridLockedTech, TECH_GUY_KEYS))
 		this.abilityControllers.push(new AbilityController(tech, TECH_GUY_KEYS))
 
