@@ -1,0 +1,4 @@
+root = true
+
+[src/**.{js,ts,css,html}]
+indent_style = tab

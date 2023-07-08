@@ -1,17 +1,26 @@
-import { Container, Graphics } from "pixi.js";
-import { Scene } from "./Scene";
+import { Container } from "pixi.js"
+import { Scene } from "./Scene"
+import { Field } from "./Field"
+import { PlayableCharacter } from "./PlayableCharacter"
+import { GridLockedMovement } from "./GridLockedMovement"
+import { GriddedMovementController } from "./GriddedMovementController"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
 
-   start = () => {
-      const graphics = new Graphics()
-      graphics.beginFill(0xffffff)
-      graphics.drawRect(0, 0, 20, 20)
-      graphics.endFill()
+	private movementController: GriddedMovementController | undefined
 
-      this.addChild(graphics)
+   start = () => {
+      const field = new Field({ width: 6, height: 6, unitWidth: 50 })
+		const character = new PlayableCharacter()
+		const gridLockedCharacter = new GridLockedMovement(field, character)
+		this.movementController = new GriddedMovementController(gridLockedCharacter)
+
+      this.addChild(field)
+		this.addChild(character)
    }
 
-   stop = () => {}
+   stop = () => {
+		this.movementController?.destroy()
+	}
 }
