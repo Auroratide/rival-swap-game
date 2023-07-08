@@ -10,7 +10,7 @@ function start() {
       antialias: true,
    })
 
-   setup(app.stage, app.ticker)
+   setup(app.stage, app.ticker, app.renderer as any)
 }
 
 start()

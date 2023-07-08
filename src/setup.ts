@@ -1,10 +1,10 @@
 import { SceneManager } from "./Scene"
 import { GameScene } from "./GameScene"
-import { Container, Ticker } from "pixi.js"
+import { Container, Renderer, Ticker } from "pixi.js"
 
-export const setup = (stage: Container, ticker: Ticker) => {
+export const setup = (stage: Container, ticker: Ticker, renderer: Renderer) => {
    const scenes = new SceneManager()
-   const game = new GameScene(ticker)
+   const game = new GameScene(ticker, renderer)
 
    stage.addChild(game)
 

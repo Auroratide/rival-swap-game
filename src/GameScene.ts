@@ -1,4 +1,4 @@
-import { Container, Ticker } from "pixi.js"
+import { Container, Renderer, Ticker } from "pixi.js"
 import { Scene } from "./Scene"
 import { Field } from "./Field"
 import { PlayableCharacter } from "./PlayableCharacter"
@@ -10,6 +10,8 @@ import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CharacterUi } from "./CharacterUi"
 import { AbilitySwap } from "./AbilitySwap"
+import { Story } from "./story/Story"
+import { Positioning } from "./Positioning"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -17,12 +19,21 @@ export class GameScene extends Container implements Scene {
 	private movementControllers: GriddedMovementController[] = []
 	private abilitySwap: AbilitySwap | undefined
 
-	constructor(private ticker: Ticker) {
+	constructor(private ticker: Ticker, private renderer: Renderer) {
 		super()
 	}
 
    start = () => {
-      const field = new Field({ width: 5, height: 5, unitWidth: 144 })
+		const positioning = new Positioning(this.renderer)
+		const story = new Story(this.ticker, positioning, this.beginGame)
+
+		this.addChild(story)
+
+		story.start()
+   }
+
+	private beginGame = () => {
+		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
 		field.position.set(0, 100)
 
 		const bigEnemy = new BigEnemy()
@@ -68,7 +79,7 @@ export class GameScene extends Container implements Scene {
 		this.addChild(bigEnemy)
 
 		this.addChild(ui)
-   }
+	}
 
    stop = () => {
 		this.movementControllers.forEach(controller => controller.destroy())
