@@ -97,6 +97,7 @@ export class TurretGroup {
 			for (const turret of this.turrets.keys()) {
 				if (isColliding(turret, withObject)) {
 					fn(turret, withObject)
+					break
 				}
 			}
 		}
