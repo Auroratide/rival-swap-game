@@ -1,4 +1,5 @@
-import { Ticker, Graphics, IDestroyOptions } from "pixi.js"
+import { Ticker, IDestroyOptions } from "pixi.js"
+import { CircularIndicator } from "./CircularIndicator"
 
 export class Cooldown {
 	private currentTicks: number
@@ -27,12 +28,12 @@ export class Cooldown {
 	}
 }
 
-export class CooldownIndicator extends Graphics {
+export class CooldownIndicator extends CircularIndicator {
 	constructor(private cooldown: Cooldown, private ticker: Ticker) {
-		super()
+		super(20)
 
-		this.draw()
-		this.ticker.add(this.draw)
+		this.drawTick()
+		this.ticker.add(this.drawTick)
 	}
 
 	destroy(options?: boolean | IDestroyOptions | undefined): void {
@@ -40,14 +41,10 @@ export class CooldownIndicator extends Graphics {
 		super.destroy(options)
 	}
 
-	private draw = () => {
+	private drawTick = () => {
 		this.clear()
 		if (this.cooldown.isOnCooldown()) {
-			this.beginFill(0xff0000)
-			this.moveTo(0, 0)
-			this.arc(0, 0, 20, 0, 2 * Math.PI * this.cooldown.progress(), false)
-			this.lineTo(0, 0)
-			this.endFill()
+			this.draw(this.cooldown.progress())
 		}
 	}
 }

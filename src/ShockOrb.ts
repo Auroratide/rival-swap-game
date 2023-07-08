@@ -1,13 +1,17 @@
 import { Graphics, IDestroyOptions, Sprite, Ticker } from "pixi.js"
 import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
+import { BigEnemy } from "./BigEnemy"
 
 export class ShockOrb extends Sprite {
+	static DAMAGE = 12
+
 	private graphics = new Graphics()
 	private velocity: Velocity
 	private checkCollisionsWithTurrets: () => void
+	private checkCollisionsWithEnemy: () => void
 
-	constructor(private ticker: Ticker, private turretGroup: TurretGroup) {
+	constructor(private ticker: Ticker, private turretGroup: TurretGroup, enemy: BigEnemy) {
 		super()
 
 		this.draw()
@@ -20,12 +24,19 @@ export class ShockOrb extends Sprite {
 			this.turretGroup.destroyTurret(turret)
 		})
 
+		this.checkCollisionsWithEnemy = enemy.onCollision(this, (head) => {
+			this.destroy()
+			head.damage(ShockOrb.DAMAGE)
+		})
+
 		this.ticker.add(this.checkCollisionsWithTurrets)
+		this.ticker.add(this.checkCollisionsWithEnemy)
 	}
 
 	destroy(options?: boolean | IDestroyOptions | undefined): void {
 		this.velocity.destroy()
 		this.ticker.remove(this.checkCollisionsWithTurrets)
+		this.ticker.remove(this.checkCollisionsWithEnemy)
 		super.destroy(options)
 	}
 

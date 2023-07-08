@@ -5,12 +5,13 @@ import { Field } from "./Field"
 import { isColliding } from "./isColliding"
 import { Velocity } from "./Velocity"
 import { Cooldown } from "./Cooldown"
+import { BigEnemy } from "./BigEnemy"
 
 export class Turret extends Sprite {
 	private graphics = new Graphics()
 	private shootCooldown: Cooldown
 
-	constructor(private ticker: Ticker) {
+	constructor(private ticker: Ticker, private enemy: BigEnemy) {
 		super()
 
 		this.draw()
@@ -22,7 +23,7 @@ export class Turret extends Sprite {
 
 	private shoot = () => {
 		if (!this.shootCooldown.isOnCooldown()) {
-			const bullet = new TurretBullet(this.ticker)
+			const bullet = new TurretBullet(this.ticker, this.enemy)
 			bullet.position = this.position
 			this.parent?.addChild(bullet)
 
@@ -43,20 +44,31 @@ export class Turret extends Sprite {
 }
 
 export class TurretBullet extends Sprite {
+	static DAMAGE = 4
+
 	private graphics = new Graphics()
 	private velocity: Velocity
+	private checkCollisionsWithEnemy: () => void
 
-	constructor(ticker: Ticker) {
+	constructor(private ticker: Ticker, enemy: BigEnemy) {
 		super()
 
 		this.velocity = new Velocity(ticker, this, { x: 10, y: 0 })
 
+		this.checkCollisionsWithEnemy = enemy.onCollision(this, (head) => {
+			this.destroy()
+			head.damage(TurretBullet.DAMAGE)
+		})
+
 		this.draw()
 		this.addChild(this.graphics)
+
+		this.ticker.add(this.checkCollisionsWithEnemy)
 	}
 
 	destroy = () => {
 		this.velocity.destroy()
+		this.ticker.remove(this.checkCollisionsWithEnemy)
 		super.destroy()
 	}
 
@@ -70,10 +82,10 @@ export class TurretBullet extends Sprite {
 export class TurretGroup {
 	private turrets = new Map<Turret, GridLockedMovement>()
 
-	constructor(private ticker: Ticker) {}
+	constructor(private ticker: Ticker, private enemy: BigEnemy) {}
 
 	createNew = (field: Field, position: Vector2): Turret => {
-		const turret = new Turret(this.ticker)
+		const turret = new Turret(this.ticker, this.enemy)
 		const gridLocked = new GridLockedMovement(field, turret)
 		gridLocked.moveTo(position)
 

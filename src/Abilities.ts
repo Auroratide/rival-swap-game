@@ -5,6 +5,7 @@ import { Field } from "./Field"
 import { GridLockedMovement } from "./GridLockedMovement"
 import { vectorAdd } from "./math"
 import { Cooldown } from "./Cooldown"
+import { BigEnemy } from "./BigEnemy"
 
 export interface Abilities {
 	readonly fireCooldown: Cooldown
@@ -18,14 +19,15 @@ export class MagicAbilities implements Abilities {
 		private user: DisplayObject,
 		private ticker: Ticker,
 		private stage: Container,
-		private turretGroup: TurretGroup
+		private turretGroup: TurretGroup,
+		private enemy: BigEnemy
 	) {
 		this.fireCooldown = new Cooldown(ticker, 50)
 	}
 
 	fire = () => {
 		if (!this.fireCooldown.isOnCooldown()) {
-			const orb = new ShockOrb(this.ticker, this.turretGroup)
+			const orb = new ShockOrb(this.ticker, this.turretGroup, this.enemy)
 			orb.position.x = this.user.position.x
 			orb.position.y = this.user.position.y
 	
