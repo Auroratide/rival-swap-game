@@ -10,6 +10,8 @@ export class GridLockedMovement {
 			x: 0,
 			y: 0
 		}
+
+		this.lock()
 	}
 
 	moveBy = (amount: Vector2) => {

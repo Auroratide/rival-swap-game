@@ -11,7 +11,7 @@ export class GameScene extends Container implements Scene {
 	private movementController: GriddedMovementController | undefined
 
    start = () => {
-      const field = new Field({ width: 6, height: 6, unitWidth: 50 })
+      const field = new Field({ width: 6, height: 6, unitWidth: 100 })
 		const character = new PlayableCharacter()
 		const gridLockedCharacter = new GridLockedMovement(field, character)
 		this.movementController = new GriddedMovementController(gridLockedCharacter)
