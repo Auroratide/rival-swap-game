@@ -39,6 +39,8 @@ export class GameScene extends Container implements Scene {
 		this.story.start()
    }
 
+	private isSwapped = () => this.abilitySwap?.areSwapped() ?? false
+
 	private beginGame = () => {
 		this.gameTimer.start()
 		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
@@ -53,12 +55,12 @@ export class GameScene extends Container implements Scene {
 
 		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score, this.assets)
 
-		const techGuy = new PlayableCharacter(this.assets.specs)
+		const techGuy = new PlayableCharacter(this.assets.specs, this.ticker, this.isSwapped)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.gameTimer)
 		const magicForTechGuy = new MagicAbilities(techGuy, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		
-		const magicGirl = new PlayableCharacter(this.assets.rune)
+		const magicGirl = new PlayableCharacter(this.assets.rune, this.ticker, this.isSwapped)
 		const magicForMagicGirl = new MagicAbilities(magicGirl, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
 		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.gameTimer)
