@@ -8,16 +8,18 @@ import { Cooldown } from "./Cooldown"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
 import { Score } from "./Score"
+import { Assets } from "./assets"
 
 export class Turret extends Sprite {
-	private graphics = new Graphics()
 	private shootCooldown: Cooldown
 
-	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score) {
+	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score, assets: Assets) {
 		super()
 
-		this.draw()
-		this.addChild(this.graphics)
+		const sprite = new Sprite(assets.turret.idle)
+		sprite.anchor.set(0.5)
+		sprite.scale.set(CONFIG.spriteScale)
+		this.addChild(sprite)
 
 		this.shootCooldown = new Cooldown(ticker, 50, 50)
 		this.ticker.add(this.shoot)
@@ -36,12 +38,6 @@ export class Turret extends Sprite {
 	destroy(options?: boolean | IDestroyOptions | undefined): void {
 		this.ticker.remove(this.shoot)
 		super.destroy(options)
-	}
-
-	private draw = () => {
-		this.graphics.beginFill(0x00aa00)
-		this.graphics.drawRect(-15, -15, 30, 30)
-		this.graphics.endFill()
 	}
 }
 
@@ -85,10 +81,10 @@ export class TurretBullet extends Sprite {
 export class TurretGroup {
 	private turrets = new Map<Turret, GridLockedMovement>()
 
-	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score) {}
+	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score, private assets: Assets) {}
 
 	createNew = (field: Field, position: Vector2): Turret => {
-		const turret = new Turret(this.ticker, this.enemy, this.score)
+		const turret = new Turret(this.ticker, this.enemy, this.score, this.assets)
 		const gridLocked = new GridLockedMovement(field, turret)
 		gridLocked.moveTo(position)
 

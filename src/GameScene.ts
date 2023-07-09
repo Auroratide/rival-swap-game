@@ -51,14 +51,14 @@ export class GameScene extends Container implements Scene {
 		const bigEnemy = new BigEnemy()
 		bigEnemy.position.set(1100, 460)
 
-		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score)
+		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score, this.assets)
 
-		const techGuy = new PlayableCharacter(0xff0000, this.assets.specs)
+		const techGuy = new PlayableCharacter(this.assets.specs)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.gameTimer)
 		const magicForTechGuy = new MagicAbilities(techGuy, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		
-		const magicGirl = new PlayableCharacter(0x4444ff)
+		const magicGirl = new PlayableCharacter(this.assets.rune)
 		const magicForMagicGirl = new MagicAbilities(magicGirl, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
 		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.gameTimer)
