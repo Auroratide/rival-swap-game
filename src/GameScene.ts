@@ -41,6 +41,8 @@ export class GameScene extends Container implements Scene {
 
 	private isSwapped = () => this.abilitySwap?.areSwapped() ?? false
 
+	private swapProgress = () => this.abilitySwap?.cooldown.progress() ?? 0
+
 	private beginGame = () => {
 		this.gameTimer.start()
 		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
@@ -50,7 +52,7 @@ export class GameScene extends Container implements Scene {
 
 		const score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
 
-		const bigEnemy = new BigEnemy()
+		const bigEnemy = new BigEnemy(this.assets, this.swapProgress, this.gameTimer)
 		bigEnemy.position.set(1100, 460)
 
 		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score, this.assets)
@@ -91,7 +93,7 @@ export class GameScene extends Container implements Scene {
 
 		ui.addChild(techUi)
 		ui.addChild(magicUi)
-		ui.addChild(enemyUi)
+		// ui.addChild(enemyUi)
 
       this.addChild(field)
 		this.addChild(magicGirl)
