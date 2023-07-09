@@ -1,5 +1,11 @@
 import { Container, Graphics, Renderer, Ticker } from "pixi.js"
 
+export type FlashOptions = {
+	intensity?: number
+	count?: number
+	color?: number
+}
+
 export class ScreenFlash extends Container {
 	private graphics = new Graphics()
 
@@ -12,8 +18,16 @@ export class ScreenFlash extends Container {
 		this.addChild(this.graphics)
 	}
 
-	flash = (intensity = 0.5) => {
+	flash = ({
+		intensity = 0.5,
+		color = 0xffffff,
+	} = {}) => {
 		this.alpha = intensity
+
+		this.graphics.clear()
+		this.graphics.beginFill(color)
+		this.graphics.drawRect(0, 0, this.renderer.width, this.renderer.height)
+		this.graphics.endFill()
 
 		this.ticker.add(this.fade)
 	}

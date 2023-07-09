@@ -73,7 +73,8 @@ export class GameScene extends Container implements Scene {
 			[techForTechGuy, magicForTechGuy],
 			[magicForMagicGirl, techForMagicGirl],
 			this.gameTimer,
-			this.story
+			this.story,
+			screenFlash
 		)
 
 		this.abilitySwap?.start()

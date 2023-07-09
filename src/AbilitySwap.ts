@@ -5,6 +5,7 @@ import { Cooldown } from "./Cooldown"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { CONFIG } from "./config"
 import { Story } from "./story/Story"
+import { ScreenFlash } from "./ScreenFlash"
 
 export class AbilitySwap {
 	private abilityControllers: AbilityController[] = []
@@ -15,7 +16,8 @@ export class AbilitySwap {
 		private techGuyAbilities: Abilities[],
 		private magicGirlAbilities: Abilities[],
 		private ticker: Ticker,
-		private story: Story
+		private story: Story,
+		private screenFlash: ScreenFlash
 	) {
 		this.cooldown = new Cooldown(ticker, CONFIG.cooldowns.abilitySwap, CONFIG.cooldowns.abilitySwap)
 		this.ticker.add(this.tick)
@@ -31,6 +33,11 @@ export class AbilitySwap {
 	}
 
 	swap = () => {
+		this.screenFlash.flash({
+			intensity: 0.4,
+			color: 0xccaaff,
+		})
+
 		this.abilityControllers.forEach(abilityController => abilityController.destroy())
 
 		this.currentIndex = (this.currentIndex + 1) % this.techGuyAbilities.length
