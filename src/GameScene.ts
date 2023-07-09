@@ -30,7 +30,7 @@ export class GameScene extends Container implements Scene {
 
    start = () => {
 		const positioning = new Positioning(this.renderer)
-		const story = new Story(this.ticker, positioning, this.beginGame)
+		const story = new Story(this.ticker, positioning, this.assets, this.beginGame)
 
 		this.addChild(story)
 

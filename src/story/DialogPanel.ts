@@ -1,24 +1,26 @@
-import { Graphics, Sprite, Ticker } from "pixi.js"
+import { Sprite, Ticker } from "pixi.js"
 import { PlainText } from "../PlainText"
 import { Tween } from "./Tween"
 import { Positioning } from "../Positioning"
+import { Assets } from "../assets"
 
 export class DialogPanel extends Sprite {
 	static Y_RISE = 100
-	private graphics = new Graphics()
 
-	constructor(speaker: string, text: string, positioning: Positioning) {
+	constructor(speaker: string, text: string, positioning: Positioning, assets: Assets) {
 		super()
 
-		this.draw()
-		this.addChild(this.graphics)
+		const background = new Sprite(assets.stoneTablet.long)
+		background.anchor.set(0.5, 1)
+		background.scale.set(10)
+		this.addChild(background)
 
 		const speakerSprite = new PlainText(speaker, {
 			size: 24,
 			align: "left",
 		})
 		speakerSprite.anchor.set(0, 0)
-		speakerSprite.position.set(-380, -190)
+		speakerSprite.position.set(-380, -250)
 
 		const textSprite = new PlainText(text, {
 			size: 30,
@@ -26,7 +28,7 @@ export class DialogPanel extends Sprite {
 			width: 760,
 		})
 		textSprite.anchor.set(0, 0)
-		textSprite.position.set(-380, -150)
+		textSprite.position.set(-380, -200)
 
 		this.addChild(speakerSprite)
 		this.addChild(textSprite)
@@ -51,11 +53,5 @@ export class DialogPanel extends Sprite {
 			.time(0.25)
 			.onFinish(() => nextPanel.show(ticker))
 			.start(ticker)
-	}
-
-	private draw = () => {
-		this.graphics.beginFill(0x999999)
-		this.graphics.drawRect(-400, -200, 800, 200)
-		this.graphics.endFill()
 	}
 }

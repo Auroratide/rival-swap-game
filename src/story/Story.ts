@@ -2,11 +2,13 @@ import { Container, Graphics, Ticker } from "pixi.js"
 import { createDialog } from "./Dialog"
 import { DialogPanel } from "./DialogPanel"
 import { Positioning } from "../Positioning"
+import { Assets } from "../assets"
 
 export class Story extends Container {
 	private currentPanelIndex = 0
+	private advanceDialog: (() => void) | undefined
 
-	constructor(private ticker: Ticker, private positioning: Positioning, private onFinish: () => void) {
+	constructor(private ticker: Ticker, private positioning: Positioning, private assets: Assets, private onFinish: () => void) {
 		super()
 
 		const background = new Graphics()
@@ -24,14 +26,16 @@ export class Story extends Container {
 			this.eventMode = 'static'
 			this.currentPanelIndex = 0
 	
-			const dialog = createDialog(this.positioning)
+			const dialog = createDialog(this.positioning, this.assets)
 			dialog.forEach((panel) => {
 				this.addChild(panel)
 			})
 	
 			dialog[0].show(this.ticker)
 	
-			this.on("pointerdown", this.next(dialog))
+			this.advanceDialog =	this.next(dialog)
+			this.on("pointerdown", this.advanceDialog)
+			document.addEventListener("keydown", this.advanceDialog)
 		} else {
 			this.finish()
 		}
@@ -40,6 +44,8 @@ export class Story extends Container {
 	finish = () => {
 		this.eventMode = 'none'
 		this.removeChildren()
+		this.off("pointerdown", this.advanceDialog)
+		document.removeEventListener("keydown", this.advanceDialog ?? (() => {}))
 
 		this.onFinish()
 	}

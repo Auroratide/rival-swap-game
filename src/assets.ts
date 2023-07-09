@@ -6,6 +6,7 @@ export const loadAllAssets = async () => {
 		PixiAssets.load("assets/shock-orb.png"),
 		PixiAssets.load("assets/call-lightning.png"),
 		PixiAssets.load("assets/call-lightning-2.png"),
+		PixiAssets.load("assets/stone-tablet.png"),
 	]) as Texture[]
 
 	textures.forEach((texture) => {
@@ -17,6 +18,7 @@ export const loadAllAssets = async () => {
 		shockOrb,
 		callLightning,
 		callLightningBolt,
+		stoneTablet,
 	] = textures
 
 	return {
@@ -29,6 +31,9 @@ export const loadAllAssets = async () => {
 		callLightning: {
 			idle: callLightning,
 			bolt: callLightningBolt,
+		},
+		stoneTablet: {
+			long: stoneTablet,
 		},
 	}
 }
