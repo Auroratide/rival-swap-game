@@ -21,5 +21,7 @@ export const CONFIG = {
 		turret: 75,
 		wall: 250,
 		abilitySwap: 1200,
-	}
+	},
+
+	font: "Macondo",
 }
