@@ -1,6 +1,7 @@
 import { Application } from "pixi.js"
 import { setup } from "./setup"
 import { CONFIG } from "./config"
+import { loadAllAssets } from "./assets"
 
 function start() {
    const app = new Application({
@@ -11,7 +12,10 @@ function start() {
       antialias: true,
    })
 
-   setup(app.stage, app.ticker, app.renderer as any)
+	loadAllAssets().then((assets) => {
+		setup(app.stage, app.ticker, app.renderer as any, assets)
+	})
+
 }
 
 start()

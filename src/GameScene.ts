@@ -15,6 +15,7 @@ import { Positioning } from "./Positioning"
 import { CONFIG } from "./config"
 import { Score } from "./Score"
 import { EnemyUi } from "./EnemyUi"
+import { Assets } from "./assets"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -22,7 +23,7 @@ export class GameScene extends Container implements Scene {
 	private movementControllers: GriddedMovementController[] = []
 	private abilitySwap: AbilitySwap | undefined
 
-	constructor(private ticker: Ticker, private renderer: Renderer) {
+	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets) {
 		super()
 	}
 
@@ -46,7 +47,7 @@ export class GameScene extends Container implements Scene {
 
 		const turretGroup = new TurretGroup(this.ticker, bigEnemy, score)
 
-		const techGuy = new PlayableCharacter(0xff0000)
+		const techGuy = new PlayableCharacter(0xff0000, this.assets.specs)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
 		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy, score)
