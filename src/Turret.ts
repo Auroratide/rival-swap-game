@@ -1,4 +1,4 @@
-import { DisplayObject, Graphics, IDestroyOptions, Sprite, Ticker } from "pixi.js"
+import { DisplayObject, IDestroyOptions, Sprite, Ticker } from "pixi.js"
 import { GridLockedMovement } from "./GridLockedMovement"
 import { Vector2, vectorEquals } from "./math"
 import { Field } from "./Field"
@@ -13,7 +13,7 @@ import { Assets } from "./assets"
 export class Turret extends Sprite {
 	private shootCooldown: Cooldown
 
-	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score, assets: Assets) {
+	constructor(private ticker: Ticker, private enemy: BigEnemy, private score: Score, private assets: Assets) {
 		super()
 
 		const sprite = new Sprite(assets.turret.idle)
@@ -27,7 +27,7 @@ export class Turret extends Sprite {
 
 	private shoot = () => {
 		if (!this.shootCooldown.isOnCooldown()) {
-			const bullet = new TurretBullet(this.ticker, this.enemy, this.score)
+			const bullet = new TurretBullet(this.ticker, this.enemy, this.score, this.assets)
 			bullet.position = this.position
 			this.parent?.addChild(bullet)
 
@@ -44,11 +44,10 @@ export class Turret extends Sprite {
 export class TurretBullet extends Sprite {
 	static DAMAGE = CONFIG.turretDamage
 
-	private graphics = new Graphics()
 	private velocity: Velocity
 	private checkCollisionsWithEnemy: () => void
 
-	constructor(private ticker: Ticker, enemy: BigEnemy, private score: Score) {
+	constructor(private ticker: Ticker, enemy: BigEnemy, private score: Score, assets: Assets) {
 		super()
 
 		this.velocity = new Velocity(ticker, this, { x: CONFIG.turretVelocity, y: 0 })
@@ -59,8 +58,10 @@ export class TurretBullet extends Sprite {
 			this.score.addTechPoints(actualDamageDealt)
 		})
 
-		this.draw()
-		this.addChild(this.graphics)
+		const sprite = new Sprite(assets.turret.arrow)
+		sprite.anchor.set(0.5)
+		sprite.scale.set(CONFIG.spriteScale)
+		this.addChild(sprite)
 
 		this.ticker.add(this.checkCollisionsWithEnemy)
 	}
@@ -69,12 +70,6 @@ export class TurretBullet extends Sprite {
 		this.velocity.destroy()
 		this.ticker.remove(this.checkCollisionsWithEnemy)
 		super.destroy()
-	}
-
-	private draw = () => {
-		this.graphics.beginFill(0x00ff00)
-		this.graphics.drawRect(0, -2.5, 10, 5)
-		this.graphics.endFill()
 	}
 }
 
