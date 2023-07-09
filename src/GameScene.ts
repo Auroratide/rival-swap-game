@@ -23,21 +23,24 @@ export class GameScene extends Container implements Scene {
 
 	private movementControllers: GriddedMovementController[] = []
 	private abilitySwap: AbilitySwap | undefined
+	private story: Story
+	private gameTimer: Ticker
 
 	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets) {
 		super()
+
+		this.story = new Story(ticker, new Positioning(renderer), assets, this.beginGame)
+		this.gameTimer = new Ticker()
 	}
 
    start = () => {
-		const positioning = new Positioning(this.renderer)
-		const story = new Story(this.ticker, positioning, this.assets, this.beginGame)
+		this.addChild(this.story)
 
-		this.addChild(story)
-
-		story.start()
+		this.story.start()
    }
 
 	private beginGame = () => {
+		this.gameTimer.start()
 		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
 		field.position.set(0, 100)
 
@@ -48,17 +51,17 @@ export class GameScene extends Container implements Scene {
 		const bigEnemy = new BigEnemy()
 		bigEnemy.position.set(1100, 460)
 
-		const turretGroup = new TurretGroup(this.ticker, bigEnemy, score)
+		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score)
 
 		const techGuy = new PlayableCharacter(0xff0000, this.assets.specs)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
-		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
-		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
+		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.gameTimer)
+		const magicForTechGuy = new MagicAbilities(techGuy, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		
 		const magicGirl = new PlayableCharacter(0x4444ff)
-		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
+		const magicForMagicGirl = new MagicAbilities(magicGirl, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
-		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.ticker)
+		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.gameTimer)
 		gridLockedMagic.moveTo({ x: 0, y: 4 })
 		
 		this.movementControllers.push(new GriddedMovementController(gridLockedTech, TECH_GUY_KEYS, turretGroup.obstacles))
@@ -67,19 +70,20 @@ export class GameScene extends Container implements Scene {
 		this.abilitySwap = new AbilitySwap(
 			[techForTechGuy, magicForTechGuy],
 			[magicForMagicGirl, techForMagicGirl],
-			this.ticker
+			this.gameTimer,
+			this.story
 		)
 
 		this.abilitySwap?.start()
 
 		const ui = new Container()
-		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.ticker, () => score.techGuyPoints)
+		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.gameTimer, () => score.techGuyPoints)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.ticker, () => score.magicGirlPoints)
+		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.gameTimer, () => score.magicGirlPoints)
 		magicUi.position.set(325, 50)
 
-		const enemyUi = new EnemyUi(CONFIG.enemyName, this.abilitySwap!.cooldown, this.ticker)
+		const enemyUi = new EnemyUi(CONFIG.enemyName, this.abilitySwap!.cooldown, this.gameTimer)
 		enemyUi.position.set(925, 50)
 
 		ui.addChild(techUi)

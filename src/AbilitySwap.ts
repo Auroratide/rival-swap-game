@@ -4,6 +4,7 @@ import { AbilityController } from "./AbilityController"
 import { Cooldown } from "./Cooldown"
 import { MAGIC_GIRL_KEYS, TECH_GUY_KEYS } from "./PlayerControls"
 import { CONFIG } from "./config"
+import { Story } from "./story/Story"
 
 export class AbilitySwap {
 	private abilityControllers: AbilityController[] = []
@@ -13,7 +14,8 @@ export class AbilitySwap {
 	constructor(
 		private techGuyAbilities: Abilities[],
 		private magicGirlAbilities: Abilities[],
-		private ticker: Ticker
+		private ticker: Ticker,
+		private story: Story
 	) {
 		this.cooldown = new Cooldown(ticker, CONFIG.cooldowns.abilitySwap, CONFIG.cooldowns.abilitySwap)
 		this.ticker.add(this.tick)
@@ -44,6 +46,13 @@ export class AbilitySwap {
 	private tick = () => {
 		if (!this.cooldown.isOnCooldown()) {
 			this.swap()
+			if (this.story.playTheTutorial) {
+				this.story.parent?.addChild(this.story) // hack to put it on top; I've stopped caring about code quality
+				this.ticker.stop()
+				this.story.startMidwayStory(() => {
+					this.ticker.start()
+				})
+			}
 		}
 	}
 

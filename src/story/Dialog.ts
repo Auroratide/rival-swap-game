@@ -15,3 +15,14 @@ export const createDialog = (positioning: Positioning, assets: Assets): DialogPa
 		new DialogPanel("", "Get more killing blows on the heads than your rival!", positioning, assets),
 	]
 }
+
+export const createMidwayDialog = (positioning: Positioning, assets: Assets): DialogPanel[] => {
+	return [
+		new DialogPanel(CONFIG.magicGirlName, "Wha-- what happened?!", positioning, assets),
+		new DialogPanel(CONFIG.techGuyName, "I... suddenly know how to use magic now.", positioning, assets),
+		new DialogPanel(CONFIG.techGuyName, "Disgusting.", positioning, assets),
+		new DialogPanel(CONFIG.magicGirlName, "And I can do science stuff. How cool!", positioning, assets),
+		new DialogPanel(CONFIG.magicGirlName, "That means all these turrets are mine now. Go my machines! Rack up my points!", positioning, assets),
+		new DialogPanel(CONFIG.techGuyName, "You can't just--! Very well, have a taste of your own magic!", positioning, assets),
+	]
+}
