@@ -2,17 +2,16 @@ import { Container, Graphics, IDestroyOptions, Ticker } from "pixi.js"
 import { Abilities } from "./Abilities"
 import { PlainText } from "./PlainText"
 import { Cooldown, CooldownIndicator } from "./Cooldown"
+import { CharacterPortrait } from "./CharacterPortrait"
+import { PlayableCharacterAssets } from "./PlayableCharacter"
 
 export class CharacterUi extends Container {
 	private readonly scoreText: PlainText
 
-	constructor(characterName: string, abilities: Abilities[], private ticker: Ticker, private getScore: () => number) {
+	constructor(characterName: string, abilities: Abilities[], private ticker: Ticker, private getScore: () => number, assets: PlayableCharacterAssets, isSwapped: () => boolean) {
 		super()
 
-		const portrait = new Graphics()
-		portrait.beginFill(0x999999)
-		portrait.drawCircle(0, 0, 40)
-		portrait.endFill()
+		const portrait = new CharacterPortrait(40, assets, ticker, isSwapped)
 
 		const text = new PlainText(characterName, {
 			size: 24,

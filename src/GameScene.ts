@@ -29,7 +29,7 @@ export class GameScene extends Container implements Scene {
 	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets) {
 		super()
 
-		this.story = new Story(ticker, new Positioning(renderer), assets, this.beginGame)
+		this.story = new Story(ticker, new Positioning(renderer), assets, this.isSwapped, this.beginGame)
 		this.gameTimer = new Ticker()
 	}
 
@@ -79,10 +79,10 @@ export class GameScene extends Container implements Scene {
 		this.abilitySwap?.start()
 
 		const ui = new Container()
-		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.gameTimer, () => score.techGuyPoints)
+		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.gameTimer, () => score.techGuyPoints, this.assets.specs, this.isSwapped)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.gameTimer, () => score.magicGirlPoints)
+		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.gameTimer, () => score.magicGirlPoints, this.assets.rune, this.isSwapped)
 		magicUi.position.set(325, 50)
 
 		const enemyUi = new EnemyUi(CONFIG.enemyName, this.abilitySwap!.cooldown, this.gameTimer)

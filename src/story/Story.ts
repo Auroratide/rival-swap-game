@@ -3,13 +3,14 @@ import { createDialog, createMidwayDialog } from "./Dialog"
 import { DialogPanel } from "./DialogPanel"
 import { Positioning } from "../Positioning"
 import { Assets } from "../assets"
+import { CharacterPortrait } from "../CharacterPortrait"
 
 export class Story extends Container {
 	private currentPanelIndex = 0
 	private advanceDialog: (() => void) | undefined
 	playTheTutorial = true
 
-	constructor(private ticker: Ticker, private positioning: Positioning, private assets: Assets, private onFinish: () => void) {
+	constructor(private ticker: Ticker, private positioning: Positioning, private assets: Assets, private isSwapped: () => boolean, private onFinish: () => void) {
 		super()
 
 		const background = new Graphics()
@@ -28,8 +29,11 @@ export class Story extends Container {
 		if (this.playTheTutorial) {
 			this.eventMode = 'static'
 			this.currentPanelIndex = 0
+
+			const techPortrait = () => new CharacterPortrait(80, this.assets.specs, this.ticker, this.isSwapped)
+			const magicPortrait = () => new CharacterPortrait(80, this.assets.rune, this.ticker, this.isSwapped)
 	
-			const dialog = createDialog(this.positioning, this.assets)
+			const dialog = createDialog(this.positioning, this.assets, { tech: techPortrait, magic: magicPortrait })
 			dialog.forEach((panel) => {
 				this.addChild(panel)
 			})
@@ -50,8 +54,11 @@ export class Story extends Container {
 			this.onFinish = newOnFinish
 			this.eventMode = 'static'
 			this.currentPanelIndex = 0
+
+			const techPortrait = () => new CharacterPortrait(80, this.assets.specs, this.ticker, this.isSwapped)
+			const magicPortrait = () => new CharacterPortrait(80, this.assets.rune, this.ticker, this.isSwapped)
 	
-			const dialog = createMidwayDialog(this.positioning, this.assets)
+			const dialog = createMidwayDialog(this.positioning, this.assets, { tech: techPortrait, magic: magicPortrait })
 			dialog.forEach((panel) => {
 				this.addChild(panel)
 			})

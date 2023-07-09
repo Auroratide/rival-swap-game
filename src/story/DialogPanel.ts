@@ -3,17 +3,24 @@ import { PlainText } from "../PlainText"
 import { Tween } from "./Tween"
 import { Positioning } from "../Positioning"
 import { Assets } from "../assets"
+import { CharacterPortrait } from "../CharacterPortrait"
 
 export class DialogPanel extends Sprite {
 	static Y_RISE = 100
 
-	constructor(speaker: string, text: string, positioning: Positioning, assets: Assets) {
+	constructor(speaker: string, text: string, positioning: Positioning, assets: Assets, portrait?: () => CharacterPortrait) {
 		super()
 
 		const background = new Sprite(assets.stoneTablet.long)
 		background.anchor.set(0.5, 1)
 		background.scale.set(10)
 		this.addChild(background)
+
+		if (portrait) {
+			const portraitSprite = portrait()
+			portraitSprite.position.set(300, -300)
+			this.addChild(portraitSprite)
+		}
 
 		const speakerSprite = new PlainText(speaker, {
 			size: 24,
