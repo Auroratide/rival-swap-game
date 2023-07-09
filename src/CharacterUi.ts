@@ -14,15 +14,16 @@ export class CharacterUi extends Container {
 		const portrait = new CharacterPortrait(40, assets, ticker, isSwapped)
 
 		const text = new PlainText(characterName, {
-			size: 24,
+			size: 32,
 			color: 0xffffff,
 		})
-		text.position.set(50, -25)
+		text.position.set(50, -34)
 
 		this.scoreText = new PlainText("0", {
 			color: 0xffffff,
+			size: 28,
 		})
-		this.scoreText.position.set(150, 20)
+		this.scoreText.position.set(150, 8)
 
 		const fireAbility = this.abilityIcon(abilities.map((it) => it.fireCooldown), ticker)
 		fireAbility.position.set(65, 25)
