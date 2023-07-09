@@ -16,6 +16,7 @@ import { CONFIG } from "./config"
 import { Score } from "./Score"
 import { EnemyUi } from "./EnemyUi"
 import { Assets } from "./assets"
+import { ScreenFlash } from "./ScreenFlash"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -40,6 +41,8 @@ export class GameScene extends Container implements Scene {
 		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
 		field.position.set(0, 100)
 
+		const screenFlash = new ScreenFlash(this.renderer, this.ticker)
+
 		const score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
 
 		const bigEnemy = new BigEnemy()
@@ -50,10 +53,10 @@ export class GameScene extends Container implements Scene {
 		const techGuy = new PlayableCharacter(0xff0000, this.assets.specs)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.ticker)
-		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy, score)
+		const magicForTechGuy = new MagicAbilities(techGuy, this.ticker, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		
 		const magicGirl = new PlayableCharacter(0x4444ff)
-		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy, score)
+		const magicForMagicGirl = new MagicAbilities(magicGirl, this.ticker, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
 		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.ticker)
 		gridLockedMagic.moveTo({ x: 0, y: 4 })
@@ -89,6 +92,8 @@ export class GameScene extends Container implements Scene {
 		this.addChild(bigEnemy)
 
 		this.addChild(ui)
+
+		this.addChild(screenFlash)
 	}
 
    stop = () => {

@@ -24,4 +24,6 @@ export const CONFIG = {
 	},
 
 	font: "Macondo",
+
+	spriteScale: 3.5,
 }

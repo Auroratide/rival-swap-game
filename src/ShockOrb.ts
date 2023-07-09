@@ -1,23 +1,25 @@
-import { Graphics, IDestroyOptions, Sprite, Ticker } from "pixi.js"
+import { IDestroyOptions, Sprite, Ticker } from "pixi.js"
 import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
 import { Score } from "./Score"
+import { Assets } from "./assets"
 
 export class ShockOrb extends Sprite {
 	static DAMAGE = CONFIG.lightningDamage
 
-	private graphics = new Graphics()
 	private velocity: Velocity
 	private checkCollisionsWithTurrets: () => void
 	private checkCollisionsWithEnemy: () => void
 
-	constructor(private ticker: Ticker, private turretGroup: TurretGroup, enemy: BigEnemy, private score: Score) {
+	constructor(private ticker: Ticker, private turretGroup: TurretGroup, enemy: BigEnemy, private score: Score, assets: Assets) {
 		super()
 
-		this.draw()
-		this.addChild(this.graphics)
+		const sprite = new Sprite(assets.shockOrb.idle)
+		sprite.anchor.set(0.5)
+		sprite.scale.set(CONFIG.spriteScale)
+		this.addChild(sprite)
 
 		this.velocity = new Velocity(ticker, this, { x: CONFIG.lightningVelocity, y: 0 })
 
@@ -41,11 +43,5 @@ export class ShockOrb extends Sprite {
 		this.ticker.remove(this.checkCollisionsWithTurrets)
 		this.ticker.remove(this.checkCollisionsWithEnemy)
 		super.destroy(options)
-	}
-
-	private draw = () => {
-		this.graphics.beginFill(0xff00ff)
-		this.graphics.drawCircle(0, 0, 15)
-		this.graphics.endFill()
 	}
 }

@@ -9,6 +9,8 @@ import { BigEnemy } from "./BigEnemy"
 import { CallLightning } from "./CallLightning"
 import { Score } from "./Score"
 import { CONFIG } from "./config"
+import { Assets } from "./assets"
+import { ScreenFlash } from "./ScreenFlash"
 
 export interface Abilities {
 	readonly fireCooldown: Cooldown
@@ -28,7 +30,9 @@ export class MagicAbilities implements Abilities {
 		private stage: Container,
 		private turretGroup: TurretGroup,
 		private enemy: BigEnemy,
-		private score: Score
+		private score: Score,
+		private assets: Assets,
+		private screenFlash: ScreenFlash
 	) {
 		this.fireCooldown = new Cooldown(ticker, CONFIG.cooldowns.shockOrb)
 		this.specialCooldown = new Cooldown(ticker, CONFIG.cooldowns.callLightning)
@@ -36,7 +40,7 @@ export class MagicAbilities implements Abilities {
 
 	fire = () => {
 		if (!this.fireCooldown.isOnCooldown()) {
-			const orb = new ShockOrb(this.ticker, this.turretGroup, this.enemy, this.score)
+			const orb = new ShockOrb(this.ticker, this.turretGroup, this.enemy, this.score, this.assets)
 			orb.position.x = this.user.position.x
 			orb.position.y = this.user.position.y
 	
@@ -48,7 +52,7 @@ export class MagicAbilities implements Abilities {
 
 	special = () => {
 		if (!this.specialCooldown.isOnCooldown()) {
-			const callLightning = new CallLightning(this.ticker, this.turretGroup, this.enemy, this.score)
+			const callLightning = new CallLightning(this.ticker, this.turretGroup, this.enemy, this.score, this.assets, this.screenFlash)
 			callLightning.position.x = this.user.position.x
 			callLightning.position.y = this.user.position.y
 

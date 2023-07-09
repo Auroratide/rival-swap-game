@@ -1,34 +1,39 @@
-import { Sprite, Graphics, Ticker, IDestroyOptions } from "pixi.js"
+import { Sprite, Ticker, IDestroyOptions } from "pixi.js"
 import { Velocity } from "./Velocity"
 import { TurretGroup } from "./Turret"
 import { BigEnemy } from "./BigEnemy"
 import { CONFIG } from "./config"
 import { Score } from "./Score"
+import { Assets } from "./assets"
+import { ScreenFlash } from "./ScreenFlash"
 
 export class CallLightning extends Sprite {
 	static MAIN_DAMAGE = CONFIG.lightningDamage * 2
 	static SIDE_DAMAGE = this.MAIN_DAMAGE / 2
 
-	private graphics = new Graphics()
 	private velocity: Velocity
 	private checkCollisionsWithTurrets: () => void
 	private checkCollisionsWithHeads: () => void
 
-	constructor(private ticker: Ticker, private turretGroup: TurretGroup, private enemy: BigEnemy, private score: Score) {
+	constructor(private ticker: Ticker, private turretGroup: TurretGroup, private enemy: BigEnemy, private score: Score, private assets: Assets, private screenFlash: ScreenFlash) {
 		super()
 
 		this.velocity = new Velocity(ticker, this, { x: CONFIG.callLightningVelocity, y: 0 })
 
 		this.checkCollisionsWithTurrets = turretGroup.onCollision(this, (turret) => {
+			this.flash()
+
 			this.turretGroup.getAdjacentTurrets(turret).forEach((turret) => {
 				this.turretGroup.destroyTurret(turret)
 			})
 
 			this.destroy()
 			this.turretGroup.destroyTurret(turret)
+
 		})
 
 		this.checkCollisionsWithHeads = enemy.onCollision(this, (head) => {
+			this.flash()
 			this.destroy()
 
 			this.enemy.getAdjacentHeads(head).forEach((head) => {
@@ -39,8 +44,11 @@ export class CallLightning extends Sprite {
 			this.score.addMagicPoints(actualDamageDealt)
 		})
 
-		this.draw()
-		this.addChild(this.graphics)
+		const sprite = new Sprite(assets.callLightning.idle)
+		sprite.anchor.set(0.5)
+		sprite.scale.set(CONFIG.spriteScale)
+		this.addChild(sprite)
+
 		this.ticker.add(this.checkCollisionsWithTurrets)
 		this.ticker.add(this.checkCollisionsWithHeads)
 	}
@@ -52,9 +60,25 @@ export class CallLightning extends Sprite {
 		super.destroy(options)
 	}
 
-	private draw = () => {
-		this.graphics.beginFill(0xff00ff)
-		this.graphics.drawCircle(0, 0, 5)
-		this.graphics.endFill()
+	private flash = () => {
+		const bolt = new Sprite(this.assets.callLightning.bolt)
+		bolt.anchor.set(0.5, 0.95)
+		bolt.scale.set(CONFIG.spriteScale * 2)
+		bolt.position.set(this.x + 75, this.y)
+		this.parent?.addChild(bolt)
+
+		let delayCount = 0
+		const removeAfterDelay = () => {
+			if (delayCount++ > 4) {
+				this.removeChild(bolt)
+				bolt.destroy()
+
+				this.ticker.remove(removeAfterDelay)
+			}
+		}
+
+		this.ticker.add(removeAfterDelay)
+
+		this.screenFlash.flash()
 	}
 }
