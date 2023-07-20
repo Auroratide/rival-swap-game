@@ -4,6 +4,12 @@ import { PlayableCharacterAssets } from "./PlayableCharacter"
 export class CharacterPortrait extends Sprite {
 	private sprite: Sprite
 
+	get flipped() { return this.sprite.scale.x > 0 }
+	set flipped(value: boolean) {
+		const m = value ? -1 : 1
+		this.sprite.scale.x = Math.abs(this.sprite.scale.x) * m
+	}
+
 	constructor(size: number, private assets: PlayableCharacterAssets, private ticker: Ticker, private isSwapped: () => boolean) {
 		super()
 

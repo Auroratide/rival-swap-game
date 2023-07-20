@@ -19,6 +19,7 @@ export class DialogPanel extends Sprite {
 		if (portrait) {
 			const portraitSprite = portrait()
 			portraitSprite.position.set(300, -300)
+			portraitSprite.flipped = true
 			this.addChild(portraitSprite)
 		}
 
