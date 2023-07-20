@@ -17,6 +17,7 @@ import { Score } from "./Score"
 import { EnemyUi } from "./EnemyUi"
 import { Assets } from "./assets"
 import { ScreenFlash } from "./ScreenFlash"
+import { WinScreen } from "./WinScreen"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -25,12 +26,14 @@ export class GameScene extends Container implements Scene {
 	private abilitySwap: AbilitySwap | undefined
 	private story: Story
 	private gameTimer: Ticker
+	private score: Score
 
 	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets) {
 		super()
 
 		this.story = new Story(ticker, new Positioning(renderer), assets, this.isSwapped, this.beginGame)
 		this.gameTimer = new Ticker()
+		this.score = new Score(() => false)
 	}
 
    start = () => {
@@ -50,20 +53,20 @@ export class GameScene extends Container implements Scene {
 
 		const screenFlash = new ScreenFlash(this.renderer, this.ticker)
 
-		const score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
+		this.score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
 
-		const bigEnemy = new BigEnemy(this.assets, this.swapProgress, this.gameTimer)
+		const bigEnemy = new BigEnemy(this.assets, this.swapProgress, this.gameTimer, this.onWin)
 		bigEnemy.position.set(1100, 460)
 
-		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, score, this.assets)
+		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, this.score, this.assets)
 
 		const techGuy = new PlayableCharacter(this.assets.specs, this.ticker, this.isSwapped)
 		const gridLockedTech = new GridLockedMovement(field, techGuy)
 		const techForTechGuy = new TechAbilities(gridLockedTech, field, this, turretGroup, this.gameTimer)
-		const magicForTechGuy = new MagicAbilities(techGuy, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
+		const magicForTechGuy = new MagicAbilities(techGuy, this.gameTimer, this, turretGroup, bigEnemy, this.score, this.assets, screenFlash)
 		
 		const magicGirl = new PlayableCharacter(this.assets.rune, this.ticker, this.isSwapped)
-		const magicForMagicGirl = new MagicAbilities(magicGirl, this.gameTimer, this, turretGroup, bigEnemy, score, this.assets, screenFlash)
+		const magicForMagicGirl = new MagicAbilities(magicGirl, this.gameTimer, this, turretGroup, bigEnemy, this.score, this.assets, screenFlash)
 		const gridLockedMagic = new GridLockedMovement(field, magicGirl)
 		const techForMagicGirl = new TechAbilities(gridLockedMagic, field, this, turretGroup, this.gameTimer)
 		gridLockedMagic.moveTo({ x: 0, y: 4 })
@@ -82,10 +85,10 @@ export class GameScene extends Container implements Scene {
 		this.abilitySwap?.start()
 
 		const ui = new Container()
-		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.gameTimer, () => score.techGuyPoints, this.assets.specs, this.isSwapped)
+		const techUi = new CharacterUi(CONFIG.techGuyName, [techForTechGuy, magicForTechGuy], this.gameTimer, () => this.score.techGuyPoints, this.assets.specs, this.isSwapped)
 		techUi.position.set(50, 50)
 
-		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.gameTimer, () => score.magicGirlPoints, this.assets.rune, this.isSwapped)
+		const magicUi = new CharacterUi(CONFIG.magicGirlName, [magicForMagicGirl, techForMagicGirl], this.gameTimer, () => this.score.magicGirlPoints, this.assets.rune, this.isSwapped)
 		magicUi.position.set(325, 50)
 
 		const enemyUi = new EnemyUi(CONFIG.enemyName, this.abilitySwap!.cooldown, this.gameTimer)
@@ -103,6 +106,19 @@ export class GameScene extends Container implements Scene {
 		this.addChild(ui)
 
 		this.addChild(screenFlash)
+	}
+
+	onWin = () => {
+		this.gameTimer.stop()
+
+		const winScreen = new WinScreen(this.restart, this.score, new Positioning(this.renderer), this.ticker, this.assets, this.assets.specs, this.assets.rune, this.isSwapped)
+		this.addChild(winScreen)
+	}
+
+	restart = () => {
+		this.stop()
+		this.removeChildren()
+		this.beginGame()
 	}
 
    stop = () => {

@@ -9,6 +9,10 @@ export class Positioning {
 		obj.height = this.renderer.height
 	}
 
+	center = (obj: DisplayObject) => {
+		obj.position.set(this.renderer.width / 2, this.renderer.height / 2)
+	}
+
 	bottomCenter = (obj: DisplayObject, padding = 0) => {
 		obj.position.set(this.renderer.width / 2, this.renderer.height - padding)
 	}

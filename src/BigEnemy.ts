@@ -7,7 +7,7 @@ import { VerticalIndicator } from "./VerticalIndicator"
 export class BigEnemy extends Sprite {
 	private heads: (EnemyHead | undefined)[] = []
 
-	constructor(private assets: Assets, private swapProgress: () => number, private ticker: Ticker) {
+	constructor(private assets: Assets, private swapProgress: () => number, private ticker: Ticker, private onWin: () => void) {
 		super()
 
 		for (let i = 0; i < 5; ++i) {
@@ -39,6 +39,10 @@ export class BigEnemy extends Sprite {
 
 		this.removeChild(head)
 		head.destroy()
+
+		if (this.heads.every((head) => head == null)) {
+			this.onWin()
+		}
 	}
 
 	getAdjacentHeads = (head: EnemyHead): EnemyHead[] => {

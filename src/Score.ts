@@ -19,4 +19,14 @@ export class Score {
 			this.magicGirlPoints += amount
 		}
 	}
+
+	winner = (): "tech" | "magic" | "tie" => {
+		if (this.techGuyPoints > this.magicGirlPoints) {
+			return "tech"
+		} else if (this.magicGirlPoints > this.techGuyPoints) {
+			return "magic"
+		} else {
+			return "tie"
+		}
+	}
 }
