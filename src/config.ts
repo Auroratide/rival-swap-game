@@ -26,4 +26,11 @@ export const CONFIG = {
 	font: "Macondo",
 
 	spriteScale: 3.5,
+
+	beam: {
+		chargeTime: 2000, // ms
+		beamTime: 600, // ms
+		minCooldown: 600,
+		maxCooldown: 1500,
+	},
 }

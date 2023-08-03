@@ -3,15 +3,18 @@ import { isColliding } from "./isColliding"
 import { CONFIG } from "./config"
 import { Assets } from "./assets"
 import { VerticalIndicator } from "./VerticalIndicator"
+import { EnemyBeam } from "./EnemyBeam"
+import { Cooldown, RandomizedCooldown } from "./Cooldown"
+import { SoundManager } from "./SoundManager"
 
 export class BigEnemy extends Sprite {
 	private heads: (EnemyHead | undefined)[] = []
 
-	constructor(private assets: Assets, private swapProgress: () => number, private ticker: Ticker, private onWin: () => void) {
+	constructor(private assets: Assets, private swapProgress: () => number, private ticker: Ticker, private onWin: () => void, sfx: SoundManager) {
 		super()
 
 		for (let i = 0; i < 5; ++i) {
-			const enemyHead = new EnemyHead(this, this.assets, this.swapProgress, this.ticker)
+			const enemyHead = new EnemyHead(this, this.assets, this.swapProgress, this.ticker, sfx)
 			enemyHead.x = 0
 			enemyHead.y = 144 * i - 290
 			this.heads.push(enemyHead)
@@ -62,13 +65,18 @@ export class EnemyHead extends Sprite {
 	collider = new Graphics()
 	private hpIndicator = new VerticalIndicator(100)
 	private powerSprite = new Sprite()
+	private beamCooldown: Cooldown
+	private beamSprite: EnemyBeam | undefined
+	private offset: number
+
 	hp = EnemyHead.MAX_HP
 
-	constructor(private body: BigEnemy, assets: Assets, private swapProgress: () => number, private ticker: Ticker) {
+	constructor(private body: BigEnemy, private assets: Assets, private swapProgress: () => number, private ticker: Ticker, private sfx: SoundManager) {
 		super()
 
 		const sprite = new Sprite(assets.monolith.idle)
 		const offset = 0.4 * Math.random() - 0.1
+		this.offset = offset
 		sprite.anchor.set(0.5 + offset, 0.7)
 		sprite.scale.set(CONFIG.spriteScale * 1.25)
 		this.addChild(sprite)
@@ -92,6 +100,9 @@ export class EnemyHead extends Sprite {
 		this.addChild(this.collider)
 
 		this.ticker.add(this.powerUp)
+
+		this.beamCooldown = new RandomizedCooldown(this.ticker, CONFIG.beam.minCooldown, CONFIG.beam.maxCooldown)
+		this.ticker.add(this.waitToChargeBeam)
 	}
 
 	// returns score for damage
@@ -108,10 +119,25 @@ export class EnemyHead extends Sprite {
 
 	destroy(options?: boolean | IDestroyOptions | undefined): void {
 		this.ticker.remove(this.powerUp)
+		this.ticker.remove(this.waitToChargeBeam)
 		super.destroy(options)
 	}
 
 	private powerUp = () => {
 		this.powerSprite.alpha = Math.max(1 - 2 * this.swapProgress(), 0)
+	}
+
+	private waitToChargeBeam = () => {
+		if (!this.beamCooldown.isOnCooldown()) {
+			this.fireBeam()
+		}
+	}
+
+	private fireBeam = () => {
+		this.beamCooldown.trigger()
+		this.beamSprite = new EnemyBeam(this.assets, this.sfx)
+		this.beamSprite.x = -100 - this.offset * 100
+		this.beamSprite.y = -100
+		this.addChild(this.beamSprite)
 	}
 }

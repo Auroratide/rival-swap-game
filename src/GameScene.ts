@@ -18,6 +18,7 @@ import { EnemyUi } from "./EnemyUi"
 import { Assets } from "./assets"
 import { ScreenFlash } from "./ScreenFlash"
 import { WinScreen } from "./WinScreen"
+import { SoundManager } from "./SoundManager"
 
 export class GameScene extends Container implements Scene {
    static NAME = "game"
@@ -28,7 +29,7 @@ export class GameScene extends Container implements Scene {
 	private gameTimer: Ticker
 	private score: Score
 
-	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets) {
+	constructor(private ticker: Ticker, private renderer: Renderer, private assets: Assets, private sfx: SoundManager) {
 		super()
 
 		this.story = new Story(ticker, new Positioning(renderer), assets, this.isSwapped, this.beginGame)
@@ -55,7 +56,7 @@ export class GameScene extends Container implements Scene {
 
 		this.score = new Score(() => this.abilitySwap?.areSwapped() ?? false)
 
-		const bigEnemy = new BigEnemy(this.assets, this.swapProgress, this.gameTimer, this.onWin)
+		const bigEnemy = new BigEnemy(this.assets, this.swapProgress, this.gameTimer, this.onWin, this.sfx)
 		bigEnemy.position.set(1100, 460)
 
 		const turretGroup = new TurretGroup(this.gameTimer, bigEnemy, this.score, this.assets)
