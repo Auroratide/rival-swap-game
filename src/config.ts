@@ -25,7 +25,7 @@ export const CONFIG = {
 
 	font: "Macondo",
 
-	spriteScale: 3.5,
+	spriteScale: 4,
 
 	beam: {
 		chargeTime: 2000, // ms

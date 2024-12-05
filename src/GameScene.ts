@@ -49,8 +49,8 @@ export class GameScene extends Container implements Scene {
 
 	private beginGame = () => {
 		this.gameTimer.start()
-		const field = new Field({ width: 5, height: 5, unitWidth: 144 })
-		field.position.set(0, 100)
+		const field = new Field({ width: 5, height: 5, unitWidth: 144 }, this.assets)
+		// field.position.set(0, 100)
 
 		const screenFlash = new ScreenFlash(this.renderer, this.ticker)
 

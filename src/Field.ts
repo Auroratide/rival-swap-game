@@ -1,4 +1,6 @@
 import { Graphics, Sprite } from "pixi.js"
+import { Assets } from "./assets"
+import { CONFIG } from "./config"
 
 export type FieldOptions = {
 	width: number
@@ -16,8 +18,12 @@ export class Field extends Sprite {
 	private graphics = new Graphics()
 	readonly gridSize: FieldDimensions
 
-	constructor(options: FieldOptions) {
+	constructor(options: FieldOptions, assets: Assets) {
 		super()
+
+		const sprite = new Sprite(assets.scenery.cliff)
+		sprite.scale.set(CONFIG.spriteScale)
+		this.addChild(sprite)
 
 		this.gridSize = {
 			width: options.width,
@@ -25,9 +31,10 @@ export class Field extends Sprite {
 			unitWidth: options.unitWidth
 		}
 
-		this.draw()
+		// this.draw()
 
 		this.addChild(this.graphics)
+		this.addChild(sprite)
 	}
 
 	private draw = () => {

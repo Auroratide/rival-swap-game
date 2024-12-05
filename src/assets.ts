@@ -40,6 +40,7 @@ export const loadAllAssets = async () => {
 		PixiAssets.load("assets/beam/BeamSegment2.png"),
 		PixiAssets.load("assets/beam/BeamCharge1.png"),
 		PixiAssets.load("assets/beam/BeamCharge2.png"),
+		PixiAssets.load("assets/bg.png"),
 	]) as Texture[]
 
 	textures.forEach((texture) => {
@@ -85,6 +86,7 @@ export const loadAllAssets = async () => {
 		beamSegment2,
 		beamCharge1,
 		beamCharge2,
+		bg,
 	] = textures
 
 	return {
@@ -109,6 +111,9 @@ export const loadAllAssets = async () => {
 		},
 		stoneTablet: {
 			long: stoneTablet,
+		},
+		scenery: {
+			cliff: bg,
 		},
 		monolith: {
 			idle: monolith,

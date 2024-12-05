@@ -1,4 +1,5 @@
 import { IDestroyOptions, Sprite, Texture, Ticker } from "pixi.js"
+import { CONFIG } from "./config"
 
 export type PlayableCharacterAssets = {
 	idle: Texture
@@ -12,7 +13,7 @@ export class PlayableCharacter extends Sprite {
 		super()
 
 		this.sprite = new Sprite(assets.idle)
-		this.sprite.scale.set(3.5)
+		this.sprite.scale.set(CONFIG.spriteScale)
 		this.sprite.anchor.set(0.5)
 		this.addChild(this.sprite)
 
